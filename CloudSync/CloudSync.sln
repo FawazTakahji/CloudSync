@@ -1,0 +1,22 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync", "CloudSync\CloudSync.csproj", "{66F7A26A-728A-448C-B4DB-C4FA77E332B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync.Dropbox", "CloudSync.Dropbox\CloudSync.Dropbox.csproj", "{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66F7A26A-728A-448C-B4DB-C4FA77E332B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F7A26A-728A-448C-B4DB-C4FA77E332B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F7A26A-728A-448C-B4DB-C4FA77E332B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F7A26A-728A-448C-B4DB-C4FA77E332B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,18 @@
+{
+  "Name": "Example Extension",
+  "Author": "FawazT",
+  "Version": "1.0.0",
+  "Description": "An example extension for CloudSync.",
+  "UniqueID": "FawazT.CloudSync.ExampleExtension",
+  "EntryDll": "ExampleExtension.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": [],
+  "Dependencies": [
+    {
+      "UniqueID": "FawazT.CloudSync",
+      "MinimumVersion": "1.0.0"
+    }
+  ],
+  "IsCloudSyncExtension": true,
+  "CloudProvider": "Example"
+}

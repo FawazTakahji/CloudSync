@@ -1,0 +1,24 @@
+{
+  "Name": "CloudSync Dropbox",
+  "Author": "FawazT",
+  "Version": "1.0.0",
+  "Description": "An extension for CloudSync that adds support for Dropbox.",
+  "UniqueID": "FawazT.CloudSync.Dropbox",
+  "EntryDll": "CloudSync.Dropbox.dll",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": [
+    "Nexus:33421@Dropbox"
+  ],
+  "Dependencies": [
+    {
+      "UniqueID": "FawazT.CloudSync",
+      "MinimumVersion": "1.0.0"
+    },
+    {
+      "UniqueID": "focustense.StardewUI",
+      "MinimumVersion": "0.6.1"
+    }
+  ],
+  "IsCloudSyncExtension": true,
+  "CloudProvider": "Dropbox"
+}

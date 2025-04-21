@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <BundleExtraAssemblies>System,ThirdParty</BundleExtraAssemblies>
+        <IgnoreModFilePaths>
+            Microsoft.CodeAnalysis.CSharp.dll,
+            Microsoft.CodeAnalysis.dll
+        </IgnoreModFilePaths>
+
+        <DefineConstants Condition="Exists('$(ProjectDir)ENV.cs')">$(DefineConstants);ENV_EXISTS</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="CloudSync">
+            <HintPath>$(GameModsPath)\CloudSync\CloudSync.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <PackageReference Include="Dropbox.Api" Version="7.0.0" />
+        <PackageReference Include="Polly" Version="8.5.2" />
+        <PackageReference Include="Polly.RateLimiting" Version="8.5.2" />
+        <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.3.2" />
+        <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.0.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <Reference Include="Pathoschild.Http.Client">
+            <HintPath>$(GamePath)\smapi-internal\Pathoschild.Http.Client.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>$(GamePath)\smapi-internal\Newtonsoft.Json.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="Assets\Views\*" />
+        <Content Include="Assets\Views\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+</Project>
