@@ -2,6 +2,7 @@
 CloudSync is a Stardew Valley mod that allows you to sync your saves across multiple devices using cloud storage services like Dropbox, and Google Drive.
 
 [Nexus Page](https://www.nexusmods.com/stardewvalley/mods/33421)
+<br/>
 [Mobile App](https://github.com/FawazTakahji/CloudSync-Mobile)
 
 ## Installation
