@@ -15,11 +15,15 @@
                           vertical-content-alignment="middle">
                         <label text={:DisplayName} />
                         <spacer layout="stretch 0px" />
-                        <button text={#ui.local-saves-view.buttons.download}
-                                click=|^DownloadSave(Info)| />
+                        <button layout="content"
+                                click=|^DownloadSave(Info)|>
+                            <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Download} />
+                        </button>
                         <spacer layout="20px 0px" />
-                        <button text={#ui.local-saves-view.buttons.info}
-                                click=|^ShowInfo(Info)| />
+                        <button layout="content"
+                                click=|^ShowInfo(Info)|>
+                            <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Info} />
+                        </button>
                     </lane>
                     <image layout="stretch 4px"
                            margin="8, 16"

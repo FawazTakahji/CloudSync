@@ -1,0 +1,19 @@
+{
+  "Sprites": {
+    "Save": {
+      "SourceRect": "0, 0, 20, 20"
+    },
+    "Cloud": {
+      "SourceRect": "20, 0, 24, 16"
+    },
+    "Upload": {
+      "SourceRect": "44, 0, 18, 18"
+    },
+    "Download": {
+      "SourceRect": "62, 0, 18, 18"
+    },
+    "Info": {
+      "SourceRect": "80, 0, 18, 18"
+    }
+  }
+}

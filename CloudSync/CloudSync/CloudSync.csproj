@@ -24,8 +24,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Assets\Views\*" />
-        <Content Include="Assets\Views\*">
+        <None Remove="assets\views\*" />
+        <Content Include="assets\views\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="assets\sprites\*" />
+        <Content Include="assets\sprites\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
