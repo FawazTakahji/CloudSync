@@ -21,7 +21,7 @@ CloudSync is a Stardew Valley mod that allows you to sync your saves across mult
 
 ## FAQ
 ### My settings keep getting reset
-When transferring the save between pc and mobile the pc settings will get reset, to solve this issue you should download the [GlobalConfigSettings](https://github.com/Gaphodil/GlobalConfigSettings) mod and enable the ChangeOnEveryLoad option
+When transferring the save between pc and mobile the pc settings will get reset, to solve this issue you should download the [Global Config Settings Rewrite](https://github.com/FawazTakahji/GlobalConfigSettingsRewrite) mod and enable the Apply on load option
 
 ## Todo
 - Add support for other cloud storage services
