@@ -1,5 +1,4 @@
 ﻿using CloudSync.Interfaces;
-using CloudSync.UI;
 using StardewUI.Framework;
 using StardewValley;
 
@@ -7,10 +6,6 @@ namespace CloudSync.ViewModels;
 
 public class HomeViewModel : ViewModelBase
 {
-    public Sprite LocalSavesSprite { get; } = Sprite.ForItem("(O)842");
-    public Sprite CloudSavesSprite { get; } = Sprite.ForItem("(O)864");
-    public Sprite SettingsSprite { get; } = Sprite.ForItem("(O)867");
-
     public static void Show()
     {
         HomeViewModel viewModel = new();

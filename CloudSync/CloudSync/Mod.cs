@@ -18,6 +18,7 @@ internal sealed class Mod : StardewModdingAPI.Mod
     public static Config Config = null!;
     public static IViewEngine ViewEngine = null!;
     public static string ViewsPrefix = null!;
+    public static string SpritesPrefix = null!;
     public static readonly List<Extension> Extensions = new();
     private static bool _shouldUpload;
     public static readonly HashSet<string> UploadingSaves = new();
@@ -30,6 +31,7 @@ internal sealed class Mod : StardewModdingAPI.Mod
         Config = helper.ReadConfig<Config>();
         Patcher.Apply(ModManifest.UniqueID);
         ViewsPrefix = $"Mods/{ModManifest.UniqueID}/Views";
+        SpritesPrefix = $"Mods/{ModManifest.UniqueID}/Sprites";
         MenuButton.Init();
 
         var extensions = helper.ModRegistry
@@ -62,7 +64,8 @@ internal sealed class Mod : StardewModdingAPI.Mod
         else
         {
             ViewEngine = viewEngine;
-            ViewEngine.RegisterViews(ViewsPrefix, "Assets/Views");
+            ViewEngine.RegisterViews(ViewsPrefix, "assets/views");
+            ViewEngine.RegisterSprites(SpritesPrefix, "assets/sprites");
             ViewEngine.PreloadAssets();
             ViewEngine.PreloadModels(
                 typeof(ButtonsBoxViewModel),
