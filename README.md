@@ -9,7 +9,7 @@ CloudSync is a Stardew Valley mod that allows you to sync your saves across mult
 1. Install [SMAPI](https://smapi.io)
 2. Download focustense's [StardewUI](https://github.com/focustense/StardewUI) mod
 3. Download the main mod and a cloud provider extension from [Releases](https://github.com/FawazTakahji/CloudSync/releases)
-4. Optionally, download [GlobalConfigSettings](https://github.com/Gaphodil/GlobalConfigSettings) mod to preserve your settings
+4. Optionally, download [Global Config Settings Rewrite](https://github.com/FawazTakahji/GlobalConfigSettingsRewrite) to preserve your settings
 
 ## Features
 - Upload saves to cloud storage services
