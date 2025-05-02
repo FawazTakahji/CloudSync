@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CloudSync.Mods;
+using Microsoft.Xna.Framework;
+using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewUI.Framework;
 using StardewValley;
@@ -11,6 +13,12 @@ public static class UploadBanner
 
     public static void Check()
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("Couldn't show upload banner: ViewEngine is null.", LogLevel.Alert);
+            return;
+        }
+
         if (Mod.UploadingSaves.Count > 0)
         {
             if (_drawable is not null)
@@ -18,7 +26,7 @@ public static class UploadBanner
                 return;
             }
 
-            _drawable = Mod.ViewEngine.CreateDrawableFromAsset($"{Mod.ViewsPrefix}/BannerView");
+            _drawable = Api.StardewUI.ViewEngine.CreateDrawableFromAsset($"{Api.StardewUI.ViewsPrefix}/BannerView");
             _drawable.Context = new { Text = I18n.Ui_UploadBanner_Uploading() };
 
             Mod.ModHelper.Events.Display.Rendered += OnRendered;

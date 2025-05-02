@@ -1,6 +1,7 @@
 ﻿using CloudSync.Enums;
 using CloudSync.Interfaces;
 using CloudSync.Models;
+using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
 using StardewUI.Framework;
@@ -68,8 +69,14 @@ public partial class SettingsViewModel : ViewModelBase
 
     public static void Show(List<Extension> extensions)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         SettingsViewModel viewModel = new(extensions);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/SettingsView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/SettingsView", viewModel);
         MenusManager.Show(controller, viewModel);
     }
 

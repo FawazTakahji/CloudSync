@@ -1,5 +1,7 @@
 ﻿using CloudSync.Enums;
 using CloudSync.Interfaces;
+using CloudSync.Mods;
+using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley.Menus;
 
@@ -23,15 +25,20 @@ public class MessageBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
         }
     }
 
-    public static MessageBoxViewModel Show(
+    public static MessageBoxViewModel? Show(
         string message,
         MessageBoxButtons buttons = MessageBoxButtons.Ok,
         Func<bool>? readyToClose = null,
         IClickableMenu? parentMenu = null,
         bool replaceExisting = false)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return null;
+        }
         MessageBoxViewModel viewModel = new(message, buttons, readyToClose);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/MessageBox", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/MessageBox", viewModel);
         viewModel.Controller = controller;
         MenusManager.Show(controller, viewModel, parentMenu, replaceExisting);
 
@@ -45,8 +52,14 @@ public class MessageBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
         IClickableMenu? parentMenu = null,
         bool replaceExisting = false)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return null;
+        }
+
         MessageBoxViewModel viewModel = new(message, buttons, readyToClose, true);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/MessageBox", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/MessageBox", viewModel);
         viewModel.Controller = controller;
         MenusManager.Show(controller, viewModel, parentMenu, replaceExisting);
 

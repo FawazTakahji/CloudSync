@@ -1,5 +1,7 @@
 ﻿using CloudSync.Interfaces;
 using CloudSync.Models;
+using CloudSync.Mods;
+using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley.Menus;
 
@@ -20,13 +22,19 @@ public class ButtonsBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
         _tsc = tsc;
     }
 
-    public static ButtonsBoxViewModel Show(
+    public static ButtonsBoxViewModel? Show(
         string message,
         BoxButton[] buttons,
         Func<bool>? readyToClose = null,
         IClickableMenu? parentMenu = null,
         bool replaceExisting = false)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return null;
+        }
+
         ButtonsBoxViewModel viewModel = new(message, buttons, readyToClose);
         foreach (BoxButton button in buttons)
         {
@@ -43,7 +51,7 @@ public class ButtonsBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
             };
         }
 
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/ButtonsBoxView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/ButtonsBoxView", viewModel);
         viewModel.Controller = controller;
         MenusManager.Show(controller, viewModel, parentMenu, replaceExisting);
 
@@ -57,6 +65,12 @@ public class ButtonsBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
         IClickableMenu? parentMenu = null,
         bool replaceExisting = false)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         TaskCompletionSource tsc = new();
         ButtonsBoxViewModel viewModel = new(message, buttons, readyToClose, tsc);
         foreach (BoxButton button in buttons)
@@ -73,7 +87,7 @@ public class ButtonsBoxViewModel : ViewModelBase, IReadyToClose, IOnClose
             };
         }
 
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/ButtonsBoxView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/ButtonsBoxView", viewModel);
         viewModel.Controller = controller;
         MenusManager.Show(controller, viewModel, parentMenu, replaceExisting);
 

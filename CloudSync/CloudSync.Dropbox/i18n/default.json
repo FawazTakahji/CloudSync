@@ -13,6 +13,7 @@
   "ui.settings-view.refresh-token-title": "Refresh Token",
   "ui.settings-view.refresh-token-tooltip": "The refresh token to be used when calling the Dropbox API",
 
+  "messages.settings-view-model.complete-authentication-in-browser": "Complete the authentication in the browser",
   "messages.settings-view-model.failed-open-url.copied-to-clipboard": "Couldn't open the url in your browser, copied the url to your clipboard.",
   "messages.settings-view-model.failed-retrieve-code.check-logs": "An error occured while retrieving the code, check the logs for more information.",
   "messages.settings-view-model.query-no-code": "Couldn't finish the authentication process because the the api didn't return a code.",

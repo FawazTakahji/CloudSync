@@ -1,6 +1,7 @@
 ﻿using CloudSync.Enums;
 using CloudSync.Interfaces;
 using CloudSync.Models;
+using CloudSync.Mods;
 using SaveUtils = CloudSync.Utilities.Saves;
 using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
@@ -22,6 +23,12 @@ public partial class LocalSavesViewModel : SavesViewModelBase
 
     public static void Show(ICloudClient client, IClickableMenu? parentMenu = null)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         (SaveInfo[] saves, bool loadFailed) info;
         try
         {
@@ -36,7 +43,7 @@ public partial class LocalSavesViewModel : SavesViewModelBase
 
         List<SaveData> saveData = info.saves.Select(save => new SaveData(save)).ToList();
         LocalSavesViewModel viewModel = new(saveData, client);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/LocalSavesView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/LocalSavesView", viewModel);
         MenusManager.Show(controller, viewModel, parentMenu, enableCloseButton: true);
 
         if (info.loadFailed)

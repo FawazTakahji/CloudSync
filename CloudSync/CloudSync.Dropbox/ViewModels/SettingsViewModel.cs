@@ -70,7 +70,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
 
             Listener listener = new($"{redirectUri}/");
             var browserViewModel = ButtonsBoxViewModel.Show(
-                "Complete the authentication in the browser",
+                I18n.Messages_SettingsViewModel_CompleteAuthenticationInBrowser(),
                 new[]
                 {
                     new BoxButton("Cancel", () =>
@@ -80,6 +80,12 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
                 },
                 () => false,
                 Controller?.Menu);
+
+            if (browserViewModel is null)
+            {
+                listener.Stop();
+                return;
+            }
 
             try
             {
@@ -158,7 +164,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
                     parentMenu: Controller?.Menu);
                 return;
             }
-            tokenViewModel.Controller?.Close();
+            tokenViewModel?.Controller?.Close();
             RefreshToken = refreshToken;
 
             SaveSettings();

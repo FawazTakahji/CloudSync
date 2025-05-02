@@ -28,7 +28,6 @@
   "messages.saves-view-model.save-info": "Farm Name\n{{farmName}}\n\nFarmer Name\n{{farmerName}}\n\nDays Played\n{{daysPlayed}}\n\nFolder Name\n{{folderName}}",
 
   "ui.local-saves-view.title": "Local Saves",
-  "ui.local-saves-view.buttons.upload": "Upload",
 
   "messages.local-saves-view-model.failed-retrieve-saves.check-logs": "Couldn't retrieve the local saves, check the logs for more info.",
   "messages.local-saves-view-model.could-not-retrieve-some-saves.check-logs": "Couldn't retrieve some of the local saves, check the logs for more info.",
@@ -41,7 +40,6 @@
   "messages.local-saves-view-model.save-uploaded": "Save uploaded.",
 
   "ui.cloud-saves-view.title": "Cloud Saves",
-  "ui.local-saves-view.buttons.download": "Download",
 
   "messages.cloud-saves-view-model.retrieving-saves": "Retrieving saves...",
   "messages.cloud-saves-view-model.failed-retrieve-saves-cloud.check-logs": "Couldn't retrieve the saves from the cloud, Check the logs for more info.",
