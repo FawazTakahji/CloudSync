@@ -3,6 +3,7 @@ using CloudSync.Enums;
 using CloudSync.Extensions;
 using CloudSync.Interfaces;
 using CloudSync.Models;
+using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
 using StardewUI.Framework;
@@ -25,8 +26,14 @@ public partial class CloudSavesViewModel : SavesViewModelBase
 
     public static void Show(ICloudClient client, IClickableMenu? parentMenu = null)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         CloudSavesViewModel viewModel = new(client);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/CloudSavesView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/CloudSavesView", viewModel);
         MenusManager.Show(controller, viewModel, parentMenu, enableCloseButton: true);
         viewModel.LoadSaves()
             .SafeFireAndForget(ex => Mod.Logger.Log($"An error occured while retrieving the saves from the cloud: {ex}", LogLevel.Error));

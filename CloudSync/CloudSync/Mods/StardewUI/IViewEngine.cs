@@ -25,6 +25,7 @@ public interface IViewEngine
     /// event or other draw handler.</returns>
     IViewDrawable CreateDrawableFromAsset(string assetName);
 
+/*
     /// <summary>
     /// Creates an <see cref="IViewDrawable"/> from arbitrary markup.
     /// </summary>
@@ -41,6 +42,7 @@ public interface IViewEngine
     /// <returns>An <see cref="IViewDrawable"/> for drawing directly to the <see cref="SpriteBatch"/> of a rendering
     /// event or other draw handler.</returns>
     IViewDrawable CreateDrawableFromMarkup(string markup);
+*/
 
     /// <summary>
     /// Creates a menu from the StarML stored in a game asset, as provided by a mod via SMAPI or Content Patcher, and
@@ -59,6 +61,7 @@ public interface IViewEngine
     /// properties can be used to change menu-level behavior.</returns>
     IMenuController CreateMenuControllerFromAsset(string assetName, object? context = null);
 
+/*
     /// <summary>
     /// Creates a menu from arbitrary markup, and returns a controller for customizing the menu's behavior.
     /// </summary>
@@ -73,7 +76,9 @@ public interface IViewEngine
     /// <returns>A controller object whose <see cref="IMenuController.Menu"/> is the created menu and whose other
     /// properties can be used to change menu-level behavior.</returns>
     IMenuController CreateMenuControllerFromMarkup(string markup, object? context = null);
+*/
 
+/*
     /// <summary>
     /// Creates a menu from the StarML stored in a game asset, as provided by a mod via SMAPI or Content Patcher.
     /// </summary>
@@ -88,7 +93,9 @@ public interface IViewEngine
     /// <returns>A menu object which can be shown using the game's standard menu APIs such as
     /// <see cref="Game1.activeClickableMenu"/>.</returns>
     IClickableMenu CreateMenuFromAsset(string assetName, object? context = null);
+*/
 
+/*
     /// <summary>
     /// Creates a menu from arbitrary markup.
     /// </summary>
@@ -103,6 +110,7 @@ public interface IViewEngine
     /// <returns>A menu object which can be shown using the game's standard menu APIs such as
     /// <see cref="Game1.activeClickableMenu"/>.</returns>
     IClickableMenu CreateMenuFromMarkup(string markup, object? context = null);
+*/
 
     /// <summary>
     /// Starts monitoring this mod's directory for changes to assets managed by any of the <c>Register</c> methods, e.g.
@@ -152,6 +160,7 @@ public interface IViewEngine
     /// <param name="types">The types that the mod expects to use as context.</param>
     void PreloadModels(params Type[] types);
 
+/*
     /// <summary>
     /// Registers a mod directory to be searched for special-purpose mod data, i.e. that is not either views or sprites.
     /// </summary>
@@ -167,6 +176,7 @@ public interface IViewEngine
     /// <param name="modDirectory">The physical directory where the asset files are located, relative to the mod
     /// directory. Typically a path such as <c>assets/ui</c> or <c>assets/ui/data</c>.</param>
     void RegisterCustomData(string assetPrefix, string modDirectory);
+*/
 
     /// <summary>
     /// Registers a mod directory to be searched for sprite (and corresponding texture/sprite sheet data) assets.

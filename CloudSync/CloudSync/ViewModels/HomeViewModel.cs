@@ -1,4 +1,6 @@
 ﻿using CloudSync.Interfaces;
+using CloudSync.Mods;
+using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley;
 
@@ -6,11 +8,22 @@ namespace CloudSync.ViewModels;
 
 public class HomeViewModel : ViewModelBase
 {
-    public static void Show()
+    public static void Show(bool playSound = true)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         HomeViewModel viewModel = new();
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/HomeView", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/HomeView", viewModel);
         MenusManager.Show(controller, viewModel, isTitleSubMenu: true);
+
+        if (playSound)
+        {
+            Game1.playSound("newArtifact");
+        }
     }
 
     public void OpenMenu(string menu)

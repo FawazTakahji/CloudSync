@@ -1,5 +1,7 @@
 ﻿using CloudSync.Interfaces;
+using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
+using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley.Menus;
 
@@ -19,8 +21,14 @@ public partial class InputBoxViewModel : ViewModelBase, IOnClose
 
     public static async Task<string?> ShowAsync(string message, IClickableMenu? parentMenu = null)
     {
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return null;
+        }
+
         InputBoxViewModel viewModel = new(message);
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/InputBox", viewModel);
+        IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/InputBox", viewModel);
         viewModel.Controller = controller;
         MenusManager.Show(controller, viewModel, parentMenu);
 
