@@ -3,12 +3,13 @@ using CloudSync.Mods;
 using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley;
+using StardewValley.Menus;
 
 namespace CloudSync.ViewModels;
 
 public class HomeViewModel : ViewModelBase
 {
-    public static void Show(bool playSound = true)
+    public static void Show(bool playSound = true, bool showCloseButton = true)
     {
         if (Api.StardewUI.ViewEngine is null)
         {
@@ -18,7 +19,37 @@ public class HomeViewModel : ViewModelBase
 
         HomeViewModel viewModel = new();
         IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/HomeView", viewModel);
-        MenusManager.Show(controller, viewModel, isTitleSubMenu: true);
+        viewModel.Controller = controller;
+
+        if (Game1.activeClickableMenu is TitleMenu titleMenu)
+        {
+            if (TitleMenu.subMenu is null)
+            {
+                TitleMenu.subMenu = controller.Menu;
+            }
+            else
+            {
+                if (showCloseButton)
+                {
+                    controller.EnableCloseButton();
+                }
+                titleMenu.SetChildMenu(controller.Menu);
+            }
+        }
+        else
+        {
+            if (Game1.activeClickableMenu is not null)
+            {
+                Game1.activeClickableMenu.exitThisMenu();
+            }
+
+            if (showCloseButton)
+            {
+                controller.EnableCloseButton();
+            }
+
+            Game1.activeClickableMenu = controller.Menu;
+        }
 
         if (playSound)
         {
@@ -28,11 +59,13 @@ public class HomeViewModel : ViewModelBase
 
     public void OpenMenu(string menu)
     {
+        IClickableMenu? parent = Game1.activeClickableMenu is TitleMenu && TitleMenu.subMenu == Controller?.Menu ? Game1.activeClickableMenu : Controller?.Menu;
+
         switch (menu)
         {
             case "Settings":
             {
-                SettingsViewModel.Show(Mod.Extensions);
+                SettingsViewModel.Show(Mod.Extensions, parent);
                 break;
             }
             case "Local":
@@ -42,7 +75,7 @@ public class HomeViewModel : ViewModelBase
                 {
                     return;
                 }
-                LocalSavesViewModel.Show(client, Game1.activeClickableMenu);
+                LocalSavesViewModel.Show(client, parent);
                 break;
             }
             case "Cloud":
@@ -52,7 +85,7 @@ public class HomeViewModel : ViewModelBase
                 {
                     return;
                 }
-                CloudSavesViewModel.Show(client, Game1.activeClickableMenu);
+                CloudSavesViewModel.Show(client, parent);
                 break;
             }
         }

@@ -5,6 +5,7 @@ using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
 using StardewUI.Framework;
+using StardewValley.Menus;
 
 namespace CloudSync.ViewModels;
 
@@ -67,7 +68,7 @@ public partial class SettingsViewModel : ViewModelBase
         PropertyChanged += (_, _) => IsExtensionSettingsVisible = SelectedExtension is not null && !string.IsNullOrEmpty(SelectedExtension.UniqueId);
     }
 
-    public static void Show(List<Extension> extensions)
+    public static void Show(List<Extension> extensions, IClickableMenu? parentMenu = null)
     {
         if (Api.StardewUI.ViewEngine is null)
         {
@@ -77,7 +78,7 @@ public partial class SettingsViewModel : ViewModelBase
 
         SettingsViewModel viewModel = new(extensions);
         IMenuController controller = Api.StardewUI.ViewEngine.CreateMenuControllerFromAsset($"{Api.StardewUI.ViewsPrefix}/SettingsView", viewModel);
-        MenusManager.Show(controller, viewModel);
+        MenusManager.Show(controller, viewModel, parentMenu: parentMenu);
     }
 
     public void OpenExtensionSettings()
