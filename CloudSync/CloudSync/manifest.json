@@ -1,7 +1,7 @@
 {
   "Name": "CloudSync",
   "Author": "FawazT",
-  "Version": "1.0.0",
+  "Version": "1.1.0",
   "Description": "A mod that allows you to sync your saves across multiple devices using cloud storage services like Dropbox, and Google Drive.",
   "UniqueID": "FawazT.CloudSync",
   "EntryDll": "CloudSync.dll",
