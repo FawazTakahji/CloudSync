@@ -1,4 +1,6 @@
-﻿using StardewUI.Framework;
+﻿using LeFauxMods.Common.Integrations.IconicFramework;
+using StarControl;
+using StardewUI.Framework;
 
 namespace CloudSync.Mods;
 
@@ -10,4 +12,8 @@ public static class Api
         public static string SpritesPrefix = "Mods/FawazT.CloudSync/Sprites";
         public static IViewEngine? ViewEngine = null;
     }
+
+    public static IIconicFrameworkApi? IconicFramework = null;
+
+    public static IStarControlApi? StarControl = null;
 }

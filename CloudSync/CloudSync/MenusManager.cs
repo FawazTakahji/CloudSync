@@ -10,7 +10,7 @@ public static class MenusManager
 {
     // private static readonly Dictionary<IClickableMenu, ViewModelBase> Menus = new();
 
-    public static void Show(IClickableMenu menu, ViewModelBase viewModel, IClickableMenu? parentMenu = null, bool replaceExisting = false, bool isTitleSubMenu = false)
+    public static void Show(IClickableMenu menu, IClickableMenu? parentMenu = null, bool replaceExisting = false, bool isTitleSubMenu = false)
     {
         // Menus.Add(menu, viewModel);
         if (isTitleSubMenu && Game1.activeClickableMenu is TitleMenu)
@@ -59,7 +59,7 @@ public static class MenusManager
             controller.EnableCloseButton();
         }
 
-        Show(controller.Menu, viewModel, parentMenu, replaceExisting, isTitleSubMenu);
+        Show(controller.Menu, parentMenu, replaceExisting, isTitleSubMenu);
     }
 
     // public static void Remove(IClickableMenu menu)

@@ -8,6 +8,7 @@ using PropertyChanged.SourceGenerator;
 using StardewModdingAPI;
 using StardewUI.Framework;
 using StardewValley;
+using StardewValley.Extensions;
 using StardewValley.Menus;
 using StardewValley.SaveSerialization;
 using SaveUtils = CloudSync.Utilities.Saves;
@@ -75,6 +76,11 @@ public partial class CloudSavesViewModel : SavesViewModelBase
 
     public async Task DownloadSave(SaveInfo info)
     {
+        if (Constants.SaveFolderName is not null && Constants.SaveFolderName.EqualsIgnoreCase(info.FolderName))
+        {
+            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_ExitCurrentSave(), parentMenu: Controller?.Menu);
+            return;
+        }
         if (Mod.UploadingSaves.Contains(info.FolderName, StringComparer.OrdinalIgnoreCase))
         {
             MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveUploadingWait(), parentMenu: Controller?.Menu);

@@ -1,12 +1,17 @@
 ﻿using CloudSync.Extensions;
 using CloudSync.Models;
+using CloudSync.Mods;
+using CloudSync.Mods.IconicFramework;
 using CloudSync.Patches;
 using CloudSync.UI;
 using CloudSync.Utilities;
+using CloudSync.ViewModels;
+using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewUISetup = CloudSync.Mods.StardewUI.StardewUI;
+using StarControlSetup = CloudSync.Mods.StarControl.StarControl;
 
 namespace CloudSync;
 
@@ -46,11 +51,21 @@ internal sealed class Mod : StardewModdingAPI.Mod
         // Avoid uploading the save after loading it
         ModHelper.Events.GameLoop.ReturnedToTitle += (_, _) => _shouldUpload = false;
         ModHelper.Events.GameLoop.SaveCreated += (_, _) => _shouldUpload = true;
+
+        helper.ConsoleCommands.Add("cloudsync_open", I18n.CommandDescription(), (_, _) => HomeViewModel.Show());
     }
 
     private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
         StardewUISetup.Setup(ModManifest);
+
+        if (Api.StardewUI.ViewEngine is null)
+        {
+            ModHelper.Events.Content.AssetRequested += OnAssetRequested;
+        }
+        IconicFramework.Setup(ModManifest);
+        StarControlSetup.Setup(ModManifest);
+
 
         Saves.Purge().SafeFireAndForget(ex => Logger.Log(ex.ToString(), LogLevel.Error));
         ModHelper.Events.GameLoop.GameLaunched -= OnGameLaunched;
@@ -70,5 +85,13 @@ internal sealed class Mod : StardewModdingAPI.Mod
         }
 
         await Saves.Upload();
+    }
+
+    private void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
+    {
+        if (e.Name.IsEquivalentTo($"Mods/{ModManifest.UniqueID}/Sprites/Icons"))
+        {
+            e.LoadFromModFile<Texture2D>("assets/sprites/icons.png", AssetLoadPriority.Low);
+        }
     }
 }
