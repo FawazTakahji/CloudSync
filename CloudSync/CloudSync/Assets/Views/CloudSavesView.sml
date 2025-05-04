@@ -19,10 +19,16 @@
                                 click=|^DownloadSave(Info)|>
                             <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Download} />
                         </button>
-                        <spacer layout="20px 0px" />
+
                         <button layout="content"
+                                margin="10,0"
                                 click=|^ShowInfo(Info)|>
                             <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Info} />
+                        </button>
+
+                        <button layout="content"
+                                click=|^DeleteSave(Info)|>
+                            <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Trash} />
                         </button>
                     </lane>
                     <image layout="stretch 4px"

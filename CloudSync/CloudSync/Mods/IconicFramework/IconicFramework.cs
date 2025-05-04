@@ -29,7 +29,7 @@ public static class IconicFramework
         Api.IconicFramework.AddToolbarIcon(
             manifest.UniqueID,
             $"Mods/{manifest.UniqueID}/Sprites/Icons",
-            new Rectangle(20, 0, 24, 16),
+            new Rectangle(0, 42, 24, 16),
             () => "CloudSync",
             I18n.OpenMenu);
 

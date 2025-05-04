@@ -3,17 +3,23 @@
     "Save": {
       "SourceRect": "0, 0, 20, 20"
     },
+    "Trash": {
+      "SourceRect": "0, 21, 20, 20"
+    },
     "Cloud": {
-      "SourceRect": "20, 0, 24, 16"
+      "SourceRect": "0, 42, 24, 16"
+    },
+    "Archive": {
+      "SourceRect": "0, 59, 20, 16"
     },
     "Upload": {
-      "SourceRect": "44, 0, 18, 18"
+      "SourceRect": "0, 76, 18, 18"
     },
     "Download": {
-      "SourceRect": "62, 0, 18, 18"
+      "SourceRect": "0, 95, 18, 18"
     },
     "Info": {
-      "SourceRect": "80, 0, 18, 18"
+      "SourceRect": "0, 114, 18, 18"
     }
   }
 }

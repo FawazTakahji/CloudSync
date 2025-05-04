@@ -57,6 +57,10 @@
   "messages.cloud-saves-view-model.save-downloaded": "Save downloaded.",
   "messages.cloud-saves-view-model.save-downloaded.settings-overwrite-failed.check-logs": "The save was downloaded, but an error occured while overwriting the save settings, check the logs for more info.",
   "messages.cloud-saves-view-model.settings-overwrite-failed.save-deleted": "An error occured while overwriting the save settings, the save got deleted.",
+  "messages.cloud-saves-view-model.deleting-save": "Deleting save...",
+  "messages.cloud-saves-view-model.save-delete-confirm": "Are you sure you want to delete the save \"{{saveName}}\" ?",
+  "messages.cloud-saves-view-model.save-deleted": "Save deleted.",
+  "messages.cloud-saves-view-model.failed-delete-save.check-logs": "Couldn't delete the save \"{{saveName}}\", check the logs for more info.",
 
   "ui.settings-view.banner-title": "Settings",
   "ui.settings-view.setting.auto-upload": "Auto Upload",
