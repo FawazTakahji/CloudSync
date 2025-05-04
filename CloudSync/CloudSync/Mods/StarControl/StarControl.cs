@@ -53,7 +53,7 @@ internal class OpenMenuItem : IRadialMenuItem
         try
         {
             Texture = Mod.ModHelper.ModContent.Load<Texture2D>("assets/sprites/Icons.png");
-            SourceRectangle = new Rectangle(20, 0, 24, 16);
+            SourceRectangle = new Rectangle(0, 42, 24, 16);
         }
         catch (Exception ex)
         {

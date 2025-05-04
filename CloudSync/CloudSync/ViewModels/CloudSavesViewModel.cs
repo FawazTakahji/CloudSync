@@ -244,6 +244,44 @@ public partial class CloudSavesViewModel : SavesViewModelBase
             }
         }
     }
+
+    public async Task DeleteSave(SaveInfo info)
+    {
+        if (Mod.UploadingSaves.Contains(info.FolderName, StringComparer.OrdinalIgnoreCase))
+        {
+            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveUploadingWait(), parentMenu: Controller?.Menu);
+            return;
+        }
+
+        string displayName = $"{info.FarmerName} | {info.FarmName}";
+        MessageBoxResult? result = await MessageBoxViewModel.ShowAsync(
+            message: I18n.Messages_CloudSavesViewModel_SaveDeleteConfirm(displayName),
+            buttons: MessageBoxButtons.YesNo,
+            parentMenu: Controller?.Menu);
+        if (result is not MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        MessageBoxViewModel.Show(
+            message: I18n.Messages_CloudSavesViewModel_DeletingSave(),
+            buttons: MessageBoxButtons.None,
+            readyToClose: () => false,
+            Controller?.Menu);
+        try
+        {
+            await _client.DeleteSave(info.FolderName);
+
+            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDeleted(), parentMenu: Controller?.Menu);
+            Saves = Saves.Where(save => save.Info.FolderName != info.FolderName).ToList();
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while deleting the save \"{info.FolderName}\": {ex}", LogLevel.Error);
+            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_FailedDeleteSave_CheckLogs(displayName), parentMenu: Controller?.Menu);
+        }
+    }
+
     private async Task<bool> ShouldDownload(SaveInfo info)
     {
         SaveInfo? localInfo = null;
