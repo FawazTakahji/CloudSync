@@ -253,7 +253,7 @@ public partial class BackupsViewModel : ViewModelBase
             }
         }
 
-        if (!Mod.Config.OverwriteSaveSettings)
+        if (!Mod.Config.OverwriteSaveSettings || Mod.GCSInstalled)
         {
             MessageBoxViewModel.Show(I18n.Messages_BackupsViewModel_BackupRestored(), parentMenu: Controller?.Menu);
             return;

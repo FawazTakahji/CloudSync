@@ -23,6 +23,7 @@ internal sealed class Mod : StardewModdingAPI.Mod
     public static readonly List<Extension> Extensions = new();
     private static bool _shouldUpload;
     public static readonly HashSet<string> UploadingSaves = new();
+    public static bool GCSInstalled;
 
     public override void Entry(IModHelper helper)
     {
@@ -45,6 +46,8 @@ internal sealed class Mod : StardewModdingAPI.Mod
             Extension extension = new(name, modInfo.Manifest.Author, modInfo.Manifest.UniqueID);
             Extensions.Add(extension);
         }
+
+        GCSInstalled = helper.ModRegistry.IsLoaded("FawazT.GlobalConfigSettingsRewrite") || helper.ModRegistry.IsLoaded("Gaphodil.GlobalConfigSettings");
 
         ModHelper.Events.GameLoop.GameLaunched += OnGameLaunched;
         ModHelper.Events.GameLoop.DayStarted += (_, _) => OnDayStarted().SafeFireAndForget(ex => Monitor.Log(ex.ToString(), LogLevel.Error));

@@ -93,6 +93,7 @@
   "ui.settings-view.setting.backup-saves.tooltip": "Backup old saves on the cloud before uploading the current save",
   "ui.settings-view.setting.purge-backups.tooltip": "Delete old backups on the cloud on startup",
   "ui.settings-view.setting.backups-to-keep.tooltip": "The number of backups to keep on the cloud when purging backups",
+  "ui.settings-view.gcs-installed": "Global Config Settings is installed.",
   "ui.settings-view.setting.overwrite-save-settings": "Overwrite Save Settings",
   "ui.settings-view.setting.overwrite-save-settings.tooltip": "Overwrites the save settings after downloading it, using the GlobalConfigSettings mod instead of this would be a better option",
   "ui.settings-view.setting.ui-scale": "UI Scale",
