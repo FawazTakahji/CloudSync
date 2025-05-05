@@ -177,7 +177,7 @@ public partial class CloudSavesViewModel : SavesViewModelBase
             }
         }
 
-        if (!Mod.Config.OverwriteSaveSettings)
+        if (!Mod.Config.OverwriteSaveSettings || Mod.GCSInstalled)
         {
             MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDownloaded(), parentMenu: Controller?.Menu);
             return;

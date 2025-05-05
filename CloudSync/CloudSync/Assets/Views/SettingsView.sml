@@ -67,41 +67,54 @@
                            tint="#C66E04"
                            sprite={@Mods/StardewUI/Sprites/ThinHorizontalDividerUncolored} />
 
+                    <label *if={GCSInstalled}
+                           text={#ui.settings-view.gcs-installed}
+                           margin="0,0,0,8" />
+
                     <checkbox label-text={#ui.settings-view.setting.overwrite-save-settings}
                               tooltip={#ui.settings-view.setting.overwrite-save-settings.tooltip}
                               layout="content 32px"
-                              is-checked={<>OverwriteSaveSettings} />
+                              is-checked={<>OverwriteSaveSettings}
+                              opacity={:Opacity} />
 
                     <label text={#ui.settings-view.setting.ui-scale}
-                           margin="0,16,0,0" />
+                           margin="0,16,0,0"
+                           opacity={:Opacity} />
                     <slider min="75"
                             max="150"
                             interval="5"
-                            value={<>UiScale} />
+                            value={<>UiScale}
+                            opacity={:Opacity} />
 
                     <label text={#ui.settings-view.setting.zoom-level}
-                           margin="0,16,0,0" />
+                           margin="0,16,0,0"
+                           opacity={:Opacity} />
                     <slider min="75"
                             max="200"
                             interval="5"
-                            value={<>ZoomLevel} />
+                            value={<>ZoomLevel}
+                            opacity={:Opacity} />
 
                     <label text={#ui.settings-view.setting.slingshot-fire-mode}
-                           margin="0,16,0,8" />
+                           margin="0,16,0,8"
+                           opacity={:Opacity} />
                     <dropdown options={:SlingshotFireModes}
                               option-format={:SlingshotFireModeFormat}
                               selected-option={<>UseLegacySlingshotFiring}
-                              option-min-width="300" />
+                              option-min-width="300"
+                              opacity={:Opacity} />
 
                     <checkbox label-text={#ui.settings-view.setting.controller-placement-tile-indicator}
                               is-checked={<>ShowPlacementTileForGamepad}
                               margin="0,16,0,0"
-                              layout="content 32px" />
+                              layout="content 32px"
+                              opacity={:Opacity} />
 
                     <checkbox label-text={#ui.settings-view.setting.controller-rumble}
                               is-checked={<>Rumble}
                               margin="0,16,0,0"
-                              layout="content 32px" />
+                              layout="content 32px"
+                              opacity={:Opacity} />
                 </lane>
             </scrollable>
 

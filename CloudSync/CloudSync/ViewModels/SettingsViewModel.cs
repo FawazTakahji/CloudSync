@@ -1,4 +1,5 @@
-﻿using CloudSync.Interfaces;
+﻿using System.ComponentModel;
+using CloudSync.Interfaces;
 using CloudSync.Models;
 using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
@@ -38,6 +39,9 @@ public partial class SettingsViewModel : ViewModelBase
         mode ? I18n.Ui_SettingsView_Setting_SlingshotFireMode_True()
             : I18n.Ui_SettingsView_Setting_SlingshotFireMode_False();
 
+    public bool GCSInstalled;
+    public float Opacity;
+
     public SettingsViewModel(List<Extension> extensions)
     {
         AutoUpload = Mod.Config.AutoUpload;
@@ -64,7 +68,9 @@ public partial class SettingsViewModel : ViewModelBase
             IsExtensionSettingsVisible = SelectedExtension is not null && !string.IsNullOrEmpty(SelectedExtension.UniqueId);
         }
 
-        PropertyChanged += (_, _) => IsExtensionSettingsVisible = SelectedExtension is not null && !string.IsNullOrEmpty(SelectedExtension.UniqueId);
+        GCSInstalled = Mod.GCSInstalled;
+        Opacity = GCSInstalled ? 0.5f : 1.0f;
+        PropertyChanged += EditProperties;
     }
 
     public static void Show(List<Extension> extensions, IClickableMenu? parentMenu = null)
@@ -137,5 +143,33 @@ public partial class SettingsViewModel : ViewModelBase
     public void Cancel()
     {
         CloseMenu();
+    }
+
+    private void EditProperties(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(SelectedExtension):
+                IsExtensionSettingsVisible = SelectedExtension is not null && !string.IsNullOrEmpty(SelectedExtension.UniqueId);
+                break;
+            case nameof(OverwriteSaveSettings) when GCSInstalled:
+                OverwriteSaveSettings = Mod.Config.OverwriteSaveSettings;
+                break;
+            case nameof(UiScale) when GCSInstalled:
+                UiScale = Mod.Config.UiScale;
+                break;
+            case nameof(ZoomLevel) when GCSInstalled:
+                ZoomLevel = Mod.Config.ZoomLevel;
+                break;
+            case nameof(UseLegacySlingshotFiring) when GCSInstalled:
+                UseLegacySlingshotFiring = Mod.Config.UseLegacySlingshotFiring;
+                break;
+            case nameof(ShowPlacementTileForGamepad) when GCSInstalled:
+                ShowPlacementTileForGamepad = Mod.Config.ShowPlacementTileForGamepad;
+                break;
+            case nameof(Rumble) when GCSInstalled:
+                Rumble = Mod.Config.Rumble;
+                break;
+        }
     }
 }
