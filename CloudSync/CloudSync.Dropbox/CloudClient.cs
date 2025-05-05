@@ -223,6 +223,49 @@ public class CloudClient : ICloudClient
     }
 
     /// <inheritdoc />
+    public async Task<(string folderName, string cloudFolderName, DateTimeOffset date)[]> GetBackups()
+    {
+        CheckClient();
+
+        List<Metadata> entries;
+        try
+        {
+            entries = await ListFolderAll(DropboxClient, "/Backups");
+        }
+        catch (ApiException<ListFolderError> ex)
+        {
+            // Don't throw if there is no backups folder
+            if (ex.ErrorResponse.AsPath?.Value.IsNotFound ?? false)
+            {
+                return Array.Empty<(string folderName, string cloudFolderName, DateTimeOffset date)>();
+            }
+
+            throw;
+        }
+
+        IEnumerable<Metadata> backups = entries.Where(e => e.IsFolder && Regex.IsMatch(e.Name, BackupRegex));
+
+        return backups.Select(backup =>
+        {
+            DateTimeOffset date = DateTimeOffset.MinValue;
+            Match match = Regex.Match(backup.Name, DateRegex);
+            if (match.Success
+                && DateTimeOffset.TryParseExact(
+                    match.Groups[1].Value,
+                    DateFormat,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out DateTimeOffset parsedDate))
+            {
+                date = parsedDate;
+            }
+
+            string[] split = backup.Name.Split('_');
+            return (string.Join("_", split.Take(split.Length - 1)), backup.Name, date);
+        }).ToArray();
+    }
+
+    /// <inheritdoc />
     public async Task BackupSave(string saveName)
     {
         CheckClient();

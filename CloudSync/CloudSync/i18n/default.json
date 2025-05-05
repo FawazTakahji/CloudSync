@@ -19,6 +19,7 @@
   "ui.home-view.local-saves": "Local Saves",
   "ui.home-view.cloud-saves": "Cloud Saves",
   "ui.home-view.settings": "Settings",
+  "ui.home-view.backups": "Backups",
 
   "messages.home-view-model.need-select-extension": "Please select and configure a cloud provider extension first.",
   "messages.home-view-model.extension-not-installed": "The selected extension \"{{extension}}\" is not installed or loaded.",
@@ -62,12 +63,21 @@
   "messages.cloud-saves-view-model.save-deleted": "Save deleted.",
   "messages.cloud-saves-view-model.failed-delete-save.check-logs": "Couldn't delete the save \"{{saveName}}\", check the logs for more info.",
 
+  "ui.backups-view.title": "Backups",
+  "ui.backups-view.purge-backups": "Purge Backups",
+
+  "messages.backups-view-model.retrieving-backups": "Retrieving backups...",
+  "messages.backups-view-model.failed-retrieve-backups.check-logs": "Couldn't retrieve the backups, check the logs for more info.",
+  "messages.backups-view-model.no-backups": "No backups found.",
+  "messages.backups-view-model.purging-backups": "Purging backups...",
+  "messages.backups-view-model.failed-purge-backups.check-logs": "Couldn't purge backups, check the logs for more info.",
+  "messages.backups-view-model.purged-backups": "Backups purged.",
+
   "ui.settings-view.banner-title": "Settings",
   "ui.settings-view.setting.auto-upload": "Auto Upload",
   "ui.settings-view.setting.backup-saves": "Backup Saves",
   "ui.settings-view.setting.purge-backups": "Purge Backups",
   "ui.settings-view.setting.backups-to-keep": "Backups To Keep",
-  "ui.settings-view.buttons.manual-purge": "Manual Purge",
   "ui.settings-view.setting.provider-extension": "Provider Extension",
   "ui.settings-view.buttons.extension-settings": "Extension Settings",
   "ui.settings-view.setting.auto-upload.tooltip": "Automatically upload the current save when the player sleeps",
@@ -84,9 +94,5 @@
   "ui.settings-view.setting.controller-placement-tile-indicator": "Controller Placement Tile Indicator",
   "ui.settings-view.setting.controller-rumble": "Controller Rumble",
 
-  "messages.settings-view-model.failed-load-extension-api": "Couldn't load the api for the selected extension.",
-  "messages.settings-view-model.failed-purge-not-authenticated": "Couldn't purge backups, please sign in first.",
-  "messages.settings-view-model.purging-backups": "Purging backups...",
-  "messages.settings-view-model.failed-purge-backups.check-logs": "Couldn't purge backups, check the logs for more info.",
-  "messages.settings-view-model.purged-backups": "Backups purged."
+  "messages.settings-view-model.failed-load-extension-api": "Couldn't load the api for the selected extension."
 }

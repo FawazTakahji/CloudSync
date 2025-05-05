@@ -63,11 +63,6 @@ public class HomeViewModel : ViewModelBase
 
         switch (menu)
         {
-            case "Settings":
-            {
-                SettingsViewModel.Show(Mod.Extensions, parent);
-                break;
-            }
             case "Local":
             {
                 ICloudClient? client = CheckCloudClient();
@@ -86,6 +81,21 @@ public class HomeViewModel : ViewModelBase
                     return;
                 }
                 CloudSavesViewModel.Show(client, parent);
+                break;
+            }
+            case "Backups":
+            {
+                ICloudClient? client = CheckCloudClient();
+                if (client is null)
+                {
+                    return;
+                }
+                BackupsViewModel.Show(client, parent);
+                break;
+            }
+            case "Settings":
+            {
+                SettingsViewModel.Show(Mod.Extensions, parent);
                 break;
             }
         }

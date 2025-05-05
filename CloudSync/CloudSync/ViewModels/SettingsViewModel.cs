@@ -1,5 +1,4 @@
-﻿using CloudSync.Enums;
-using CloudSync.Interfaces;
+﻿using CloudSync.Interfaces;
 using CloudSync.Models;
 using CloudSync.Mods;
 using PropertyChanged.SourceGenerator;
@@ -96,43 +95,6 @@ public partial class SettingsViewModel : ViewModelBase
         }
 
         api.ShowSettings(Controller?.Menu);
-    }
-
-    public async Task ManualPurge()
-    {
-        if (SelectedExtension is null)
-        {
-            return;
-        }
-
-        IExtensionApi? api = Mod.ModHelper.ModRegistry.GetApi<IExtensionApi>(SelectedExtension.UniqueId);
-        if (api is null)
-        {
-            MessageBoxViewModel.Show(I18n.Messages_SettingsViewModel_FailedLoadExtensionApi(), parentMenu: Controller?.Menu);
-            return;
-        }
-        ICloudClient client = api.GetClient();
-        if (!client.IsAuthenticated())
-        {
-            MessageBoxViewModel.Show(I18n.Messages_SettingsViewModel_FailedPurgeNotAuthenticated(), parentMenu: Controller?.Menu);
-            return;
-        }
-
-        MessageBoxViewModel.Show(
-            I18n.Messages_SettingsViewModel_PurgingBackups(),
-            MessageBoxButtons.None,
-            () => false,
-            Controller?.Menu);
-        try
-        {
-            await client.PurgeBackups(Mod.Config.BackupsToKeep);
-            MessageBoxViewModel.Show(I18n.Messages_SettingsViewModel_PurgedBackups(), parentMenu: Controller?.Menu);
-        }
-        catch (Exception ex)
-        {
-            Mod.Logger.Log($"An error occured while purging backups: {ex}", LogLevel.Error);
-            MessageBoxViewModel.Show(message: I18n.Messages_SettingsViewModel_FailedPurgeBackups_CheckLogs(), parentMenu: Controller?.Menu);
-        }
     }
 
     public void Save()
