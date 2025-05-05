@@ -37,16 +37,6 @@
                             tooltip={#ui.settings-view.setting.backups-to-keep.tooltip}
                             value={<>BackupsToKeep} />
 
-                    <panel *switch={IsExtensionSettingsVisible}
-                           margin="0,16,0,0">
-                        <button *case="true"
-                                text={#ui.settings-view.buttons.manual-purge}
-                                click=|ManualPurge()| />
-                        <button *case="false"
-                                text={#ui.settings-view.buttons.manual-purge}
-                                opacity="0.5" />
-                    </panel>
-
                     <image layout="stretch 4px"
                            margin="8, 16"
                            fit="stretch"
