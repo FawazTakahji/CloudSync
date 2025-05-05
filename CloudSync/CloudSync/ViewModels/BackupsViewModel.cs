@@ -47,7 +47,9 @@ public partial class BackupsViewModel : ViewModelBase
         try
         {
             var backups = await _client.GetBackups();
-            Backups = backups.Select(Backup.FromTuple).ToList();
+            Backups = backups.Select(Backup.FromTuple)
+                .OrderBy(o => o.CloudFolderName)
+                .ToList();
             viewmodel?.Controller?.Menu.exitThisMenu();
 
             if (Backups.Count == 0)
@@ -81,6 +83,37 @@ public partial class BackupsViewModel : ViewModelBase
         {
             Mod.Logger.Log($"An error occured while purging the backups: {ex}", LogLevel.Error);
             MessageBoxViewModel.Show(message: I18n.Messages_BackupsViewModel_FailedPurgeBackups_CheckLogs(), parentMenu: Controller?.Menu);
+        }
+    }
+
+    public async Task DeleteBackup(Backup backup)
+    {
+        MessageBoxResult? result = await MessageBoxViewModel.ShowAsync(
+            message: I18n.Messages_BackupsViewModel_DeleteBackupConfirm(backup.CloudFolderName),
+            buttons: MessageBoxButtons.YesNo,
+            parentMenu: Controller?.Menu);
+
+        if (result is not MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        MessageBoxViewModel.Show(
+            message: I18n.Messages_BackupsViewModel_DeletingBackup(),
+            buttons: MessageBoxButtons.None,
+            readyToClose: () => false,
+            Controller?.Menu);
+
+        try
+        {
+            await _client.DeleteBackup(backup.CloudFolderName);
+            Backups = Backups.Where(b => b.CloudFolderName != backup.CloudFolderName).ToList();
+            MessageBoxViewModel.Show(I18n.Messages_BackupsViewModel_BackupDeleted(), parentMenu: Controller?.Menu);
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while deleting the backup \"{backup.CloudFolderName}\": {ex}", LogLevel.Error);
+            MessageBoxViewModel.Show(message: I18n.Messages_BackupsViewModel_FailedDeleteBackup_CheckLogs(), parentMenu: Controller?.Menu);
         }
     }
 }

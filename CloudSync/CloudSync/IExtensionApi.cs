@@ -55,6 +55,11 @@ public interface ICloudClient
     public Task<(string folderName, string cloudFolderName, DateTimeOffset date)[]> GetBackups();
 
     /// <summary>
+    /// Deletes a backup from the cloud.
+    /// </summary>
+    public Task DeleteBackup(string folderName);
+
+    /// <summary>
     /// Backups an existing save on the cloud, this won't do anything if there is no existing save.
     /// </summary>
     /// <param name="saveName">The name of the save folder</param>

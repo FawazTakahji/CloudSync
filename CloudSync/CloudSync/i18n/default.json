@@ -72,6 +72,10 @@
   "messages.backups-view-model.purging-backups": "Purging backups...",
   "messages.backups-view-model.failed-purge-backups.check-logs": "Couldn't purge backups, check the logs for more info.",
   "messages.backups-view-model.purged-backups": "Backups purged.",
+  "messages.backups-view-model.delete-backup-confirm": "Are you sure you want to delete the backup \"{{backupName}}\" ?",
+  "messages.backups-view-model.deleting-backup": "Deleting backup...",
+  "messages.backups-view-model.backup-deleted": "Backup deleted.",
+  "messages.backups-view-model.failed-delete-backup.check-logs": "Couldn't delete the backup, check the logs for more info.",
 
   "ui.settings-view.banner-title": "Settings",
   "ui.settings-view.setting.auto-upload": "Auto Upload",
