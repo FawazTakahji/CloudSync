@@ -266,6 +266,14 @@ public class CloudClient : ICloudClient
     }
 
     /// <inheritdoc />
+    public async Task DeleteBackup(string folderName)
+    {
+        CheckClient();
+
+        await Pipeline.ExecuteAsync(async _ => await DropboxClient.Files.DeleteV2Async($"/Backups/{folderName}"));
+    }
+
+    /// <inheritdoc />
     public async Task BackupSave(string saveName)
     {
         CheckClient();

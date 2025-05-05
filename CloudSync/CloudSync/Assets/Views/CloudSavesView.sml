@@ -32,7 +32,7 @@
                         </button>
                     </lane>
                     <image layout="stretch 4px"
-                           margin="8, 16"
+                           margin="0,16"
                            fit="stretch"
                            tint="#C66E04"
                            sprite={@Mods/StardewUI/Sprites/ThinHorizontalDividerUncolored} />

@@ -16,7 +16,7 @@
                             click=|PurgeBackups()| />
                 </panel>
                 <image layout="stretch 4px"
-                       margin="0, 8"
+                       margin="0,8,0,16"
                        fit="stretch"
                        tint="#C66E04"
                        sprite={@Mods/StardewUI/Sprites/ThinHorizontalDividerUncolored}
@@ -28,9 +28,13 @@
                           vertical-content-alignment="middle">
                         <label text={:DisplayName} />
                         <spacer layout="stretch 0px" />
+                        <button layout="content"
+                                click=|^DeleteBackup(this)|>
+                            <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Trash} />
+                        </button>
                     </lane>
                     <image layout="stretch 4px"
-                           margin="0, 16"
+                           margin="0,16"
                            fit="stretch"
                            tint="#C66E04"
                            sprite={@Mods/StardewUI/Sprites/ThinHorizontalDividerUncolored} />
