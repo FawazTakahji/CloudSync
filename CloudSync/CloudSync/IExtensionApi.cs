@@ -66,6 +66,13 @@ public interface ICloudClient
     public Task BackupSave(string saveName);
 
     /// <summary>
+    /// Downloads a backup from the cloud.
+    /// </summary>
+    /// <param name="folderName">The name of the backup folder</param>
+    /// <param name="parentPath">The folder where the backup will be downloaded to, this doesn't include the backup name itself</param>
+    public Task DownloadBackup(string folderName, string parentPath);
+
+    /// <summary>
     /// Deletes older backups of all saves.
     /// </summary>
     /// <param name="backupsToKeep">The number of backups to keep</param>

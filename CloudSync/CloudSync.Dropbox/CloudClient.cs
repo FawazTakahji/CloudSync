@@ -294,6 +294,19 @@ public class CloudClient : ICloudClient
         }
     }
 
+    /// <inheritdoc/>
+    public async Task DownloadBackup(string folderName, string parentPath)
+    {
+        CheckClient();
+
+        IDownloadResponse<DownloadZipResult> response = await Pipeline.ExecuteAsync(async _ =>
+            await DropboxClient.Files.DownloadZipAsync($"/Backups/{folderName}"));
+
+        await using Stream stream = await response.GetContentAsStreamAsync();
+        using ZipArchive zip = new(stream, ZipArchiveMode.Read);
+        zip.ExtractToDirectory(parentPath);
+    }
+
     /// <inheritdoc />
     public async Task PurgeBackups(int backupsToKeep)
     {

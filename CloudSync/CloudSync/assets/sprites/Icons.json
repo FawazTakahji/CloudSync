@@ -20,6 +20,9 @@
     },
     "Info": {
       "SourceRect": "0, 114, 18, 18"
+    },
+    "Restore": {
+      "SourceRect": "0, 133, 16, 16"
     }
   }
 }
