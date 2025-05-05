@@ -78,12 +78,12 @@ public partial class CloudSavesViewModel : SavesViewModelBase
     {
         if (Constants.SaveFolderName is not null && Constants.SaveFolderName.EqualsIgnoreCase(info.FolderName))
         {
-            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_ExitCurrentSave(), parentMenu: Controller?.Menu);
+            MessageBoxViewModel.Show(I18n.Messages_Other_ExitCurrentSave(), parentMenu: Controller?.Menu);
             return;
         }
         if (Mod.UploadingSaves.Contains(info.FolderName, StringComparer.OrdinalIgnoreCase))
         {
-            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveUploadingWait(), parentMenu: Controller?.Menu);
+            MessageBoxViewModel.Show(I18n.Messages_Other_SaveUploadingWait(), parentMenu: Controller?.Menu);
             return;
         }
 
@@ -117,6 +117,7 @@ public partial class CloudSavesViewModel : SavesViewModelBase
             return;
         }
 
+        string savePath = Path.Combine(Constants.SavesPath, info.FolderName);
         try
         {
             try
@@ -132,7 +133,6 @@ public partial class CloudSavesViewModel : SavesViewModelBase
                 return;
             }
 
-            string savePath = Path.Combine(Constants.SavesPath, info.FolderName);
             try
             {
                 if (Directory.Exists(savePath))
@@ -161,73 +161,6 @@ public partial class CloudSavesViewModel : SavesViewModelBase
                     parentMenu: Controller?.Menu);
                 return;
             }
-
-            if (!Mod.Config.OverwriteSaveSettings)
-            {
-                MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDownloaded(), parentMenu: Controller?.Menu);
-                return;
-            }
-
-            string saveFilePath = Path.Combine(savePath, info.FolderName);
-            FileStream stream;
-            SaveGame saveGame;
-            try
-            {
-                stream = File.Open(saveFilePath, FileMode.Open, FileAccess.ReadWrite);
-                saveGame = SaveSerializer.Deserialize<SaveGame>(stream);
-            }
-            catch (Exception ex)
-            {
-                Mod.Logger.Log($"An error occured while opening the save file \"{saveFilePath}\": {ex}", LogLevel.Error);
-                MessageBoxViewModel.Show(
-                    I18n.Messages_CloudSavesViewModel_SaveDownloaded_SettingsOverwriteFailed_CheckLogs(),
-                    parentMenu: Controller?.Menu);
-                return;
-            }
-
-            saveGame.options.singlePlayerDesiredUIScale = Mod.Config.UiScale / 100.0f;
-            saveGame.options.localCoopDesiredUIScale = Mod.Config.UiScale / 100.0f;
-            saveGame.options.singlePlayerBaseZoomLevel = Mod.Config.ZoomLevel / 100.0f;
-            saveGame.options.localCoopBaseZoomLevel = Mod.Config.ZoomLevel / 100.0f;
-            saveGame.options.useLegacySlingshotFiring = Mod.Config.UseLegacySlingshotFiring;
-            saveGame.options.showPlacementTileForGamepad = Mod.Config.ShowPlacementTileForGamepad;
-            saveGame.options.rumble = Mod.Config.Rumble;
-
-
-            XmlWriter? writer = null;
-            try
-            {
-                stream.SetLength(0);
-                writer = XmlWriter.Create(stream);
-                SaveSerializer.Serialize(writer, saveGame);
-
-                writer.Close();
-                stream.Close();
-            }
-            catch (Exception ex)
-            {
-                Mod.Logger.Log($"An error occured while saving the save file \"{saveFilePath}\": {ex}", LogLevel.Error);
-                MessageBoxViewModel.Show(
-                    I18n.Messages_CloudSavesViewModel_SettingsOverwriteFailed_SaveDeleted(),
-                    parentMenu: Controller?.Menu);
-
-                writer?.Close();
-                stream.Close();
-
-                try
-                {
-                    Directory.Delete(savePath, true);
-                }
-                catch (Exception ex2)
-                {
-                    Mod.Logger.Log($"An error occured while deleting the save folder \"{savePath}\": {ex2}",
-                        LogLevel.Error);
-                }
-
-                return;
-            }
-
-            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDownloaded(), parentMenu: Controller?.Menu);
         }
         finally
         {
@@ -243,13 +176,80 @@ public partial class CloudSavesViewModel : SavesViewModelBase
                 Mod.Logger.Log($"An error occured while deleting the temp save folder \"{tempSavePath}\": {ex}", LogLevel.Error);
             }
         }
+
+        if (!Mod.Config.OverwriteSaveSettings)
+        {
+            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDownloaded(), parentMenu: Controller?.Menu);
+            return;
+        }
+
+        string saveFilePath = Path.Combine(savePath, info.FolderName);
+        FileStream stream;
+        SaveGame saveGame;
+        try
+        {
+            stream = File.Open(saveFilePath, FileMode.Open, FileAccess.ReadWrite);
+            saveGame = SaveSerializer.Deserialize<SaveGame>(stream);
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while opening the save file \"{saveFilePath}\": {ex}", LogLevel.Error);
+            MessageBoxViewModel.Show(
+                I18n.Messages_CloudSavesViewModel_SaveDownloaded_SettingsOverwriteFailed_CheckLogs(),
+                parentMenu: Controller?.Menu);
+            return;
+        }
+
+        saveGame.options.singlePlayerDesiredUIScale = Mod.Config.UiScale / 100.0f;
+        saveGame.options.localCoopDesiredUIScale = Mod.Config.UiScale / 100.0f;
+        saveGame.options.singlePlayerBaseZoomLevel = Mod.Config.ZoomLevel / 100.0f;
+        saveGame.options.localCoopBaseZoomLevel = Mod.Config.ZoomLevel / 100.0f;
+        saveGame.options.useLegacySlingshotFiring = Mod.Config.UseLegacySlingshotFiring;
+        saveGame.options.showPlacementTileForGamepad = Mod.Config.ShowPlacementTileForGamepad;
+        saveGame.options.rumble = Mod.Config.Rumble;
+
+
+        XmlWriter? writer = null;
+        try
+        {
+            stream.SetLength(0);
+            writer = XmlWriter.Create(stream);
+            SaveSerializer.Serialize(writer, saveGame);
+
+            writer.Close();
+            stream.Close();
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while saving the save file \"{saveFilePath}\": {ex}", LogLevel.Error);
+            MessageBoxViewModel.Show(
+                I18n.Messages_Other_SettingsOverwriteFailed_SaveDeleted(),
+                parentMenu: Controller?.Menu);
+
+            writer?.Close();
+            stream.Close();
+
+            try
+            {
+                Directory.Delete(savePath, true);
+            }
+            catch (Exception ex2)
+            {
+                Mod.Logger.Log($"An error occured while deleting the save folder \"{savePath}\": {ex2}",
+                    LogLevel.Error);
+            }
+
+            return;
+        }
+
+        MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveDownloaded(), parentMenu: Controller?.Menu);
     }
 
     public async Task DeleteSave(SaveInfo info)
     {
         if (Mod.UploadingSaves.Contains(info.FolderName, StringComparer.OrdinalIgnoreCase))
         {
-            MessageBoxViewModel.Show(I18n.Messages_CloudSavesViewModel_SaveUploadingWait(), parentMenu: Controller?.Menu);
+            MessageBoxViewModel.Show(I18n.Messages_Other_SaveUploadingWait(), parentMenu: Controller?.Menu);
             return;
         }
 

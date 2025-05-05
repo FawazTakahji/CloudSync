@@ -28,6 +28,11 @@
                           vertical-content-alignment="middle">
                         <label text={:DisplayName} />
                         <spacer layout="stretch 0px" />
+                        <button layout="52px 44px"
+                                margin="0,0,10,0"
+                                click=|^RestoreBackup(this)|>
+                            <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Restore} />
+                        </button>
                         <button layout="content"
                                 click=|^DeleteBackup(this)|>
                             <image sprite={@Mods/FawazT.CloudSync/Sprites/Icons:Trash} />
