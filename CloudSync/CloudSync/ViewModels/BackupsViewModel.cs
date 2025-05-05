@@ -81,12 +81,22 @@ public partial class BackupsViewModel : ViewModelBase
         try
         {
             await _client.PurgeBackups(Mod.Config.BackupsToKeep);
-            MessageBoxViewModel.Show(I18n.Messages_BackupsViewModel_PurgedBackups(), parentMenu: Controller?.Menu);
+            await MessageBoxViewModel.ShowAsync(I18n.Messages_BackupsViewModel_PurgedBackups(), parentMenu: Controller?.Menu);
         }
         catch (Exception ex)
         {
             Mod.Logger.Log($"An error occured while purging the backups: {ex}", LogLevel.Error);
             MessageBoxViewModel.Show(message: I18n.Messages_BackupsViewModel_FailedPurgeBackups_CheckLogs(), parentMenu: Controller?.Menu);
+            return;
+        }
+
+        try
+        {
+            await LoadBackups();
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while loading the backups: {ex}", LogLevel.Error);
         }
     }
 
