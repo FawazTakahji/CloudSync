@@ -1,7 +1,7 @@
 {
   "Name": "CloudSync Dropbox",
   "Author": "FawazT",
-  "Version": "1.0.0",
+  "Version": "1.1.0",
   "Description": "An extension for CloudSync that adds support for Dropbox.",
   "UniqueID": "FawazT.CloudSync.Dropbox",
   "EntryDll": "CloudSync.Dropbox.dll",
