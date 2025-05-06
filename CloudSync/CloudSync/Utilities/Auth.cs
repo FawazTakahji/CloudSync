@@ -1,4 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net;
+using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using Pathoschild.Http.Client;
@@ -34,4 +36,13 @@ public static class Auth
             .Replace("+", "-")
             .Replace("/", "_")
             .TrimEnd('=');
+
+    public static int GetRandomUnusedPort()
+    {
+        TcpListener listener = new(IPAddress.Any, 0);
+        listener.Start();
+        int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+        listener.Stop();
+        return port;
+    }
 }

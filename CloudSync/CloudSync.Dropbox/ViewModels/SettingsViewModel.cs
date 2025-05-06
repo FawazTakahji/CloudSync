@@ -59,7 +59,8 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         {
             _isAuthenticating = true;
             (string codeVerifier, string codeChallenge) = Auth.GeneratePkce();
-            string redirectUri = "http://127.0.0.1:22674/dbx";
+            int port = Auth.GetRandomUnusedPort();
+            string redirectUri = $"http://127.0.0.1:{port}/dbx";
             string url =
                 $"https://www.dropbox.com/oauth2/authorize" +
                 $"?client_id={Mod.Config.AppKey}" +
@@ -73,7 +74,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
                 I18n.Messages_SettingsViewModel_CompleteAuthenticationInBrowser(),
                 new[]
                 {
-                    new BoxButton("Cancel", () =>
+                    new BoxButton(I18n.Ui_Buttons_Cancel(), () =>
                     {
                         listener.Stop();
                     })
