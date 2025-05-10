@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.RateLimiting;
 using CloudSync.Interfaces;
 using CloudSync.Models;
 using CloudSync.Utilities;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
@@ -11,6 +14,8 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Services;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Retry;
 using StardewModdingAPI;
 using StardewValley.Extensions;
 using DriveFile = Google.Apis.Drive.v3.Data.File;
@@ -27,6 +32,30 @@ public class CloudClient : ICloudClient
 
     private const string DateFormat = "yyyy-MM-ddTHH.mm.sszzz";
     private const string BackupRegex = @"^(.+_\d+)_\[\d{4}-\d{2}-\d{2}T\d{2}\.\d{2}\.\d{2}\+\d{4}\]$";
+
+    private static readonly ResiliencePipeline Pipeline = new ResiliencePipelineBuilder()
+        .AddRetry(new RetryStrategyOptions
+        {
+            MaxRetryAttempts = 3,
+            Delay = TimeSpan.FromSeconds(1),
+            BackoffType = DelayBackoffType.Exponential,
+            UseJitter = true,
+            ShouldHandle = new PredicateBuilder().Handle<GoogleApiException>(ex => ex.HttpStatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests),
+            DelayGenerator = static args => new ValueTask<TimeSpan?>(args.AttemptNumber switch
+            {
+                0 => TimeSpan.Zero,
+                1 => TimeSpan.FromSeconds(1),
+                _ => TimeSpan.FromSeconds(5)
+            })
+        })
+        .AddRateLimiter(new SlidingWindowRateLimiter(new SlidingWindowRateLimiterOptions
+        {
+            PermitLimit = 12000,
+            QueueLimit = int.MaxValue,
+            Window = TimeSpan.FromMinutes(1),
+            SegmentsPerWindow = 4
+        }))
+        .Build();
 
     [MemberNotNull(nameof(Drive))]
     private static void CheckClient()
@@ -76,34 +105,33 @@ public class CloudClient : ICloudClient
 
         FilesResource.ListRequest rootRequest = drive.Files.List();
         rootRequest.Q = "name='CloudSync' and mimeType='application/vnd.google-apps.folder' and 'root' in parents and trashed = false";
-        FileList folders = await rootRequest.ExecuteAsync();
+        FileList folders = await Pipeline.ExecuteAsync(async _ => await rootRequest.ExecuteAsync(CancellationToken.None));
 
         CloudSyncId = folders.Files.FirstOrDefault(f => f.Name == "CloudSync")?.Id;
         if (CloudSyncId is null)
         {
-            DriveFile file = await drive.Files.Create(new DriveFile
+            DriveFile file = await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(new DriveFile
             {
                 Name = "CloudSync",
                 MimeType = "application/vnd.google-apps.folder"
-            }).ExecuteAsync();
+            }).ExecuteAsync(CancellationToken.None));
 
             CloudSyncId = file.Id;
 
-            DriveFile saves = await drive.Files.Create(new DriveFile
+            List<Task> tasks = new()
             {
-                Name = "Saves",
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { CloudSyncId }
-            }).ExecuteAsync();
-            SavesId = saves.Id;
-
-            DriveFile backups = await drive.Files.Create(new DriveFile
+                CreateSaves(drive, CloudSyncId),
+                CreateBackups(drive, CloudSyncId)
+            };
+            await Task.WhenAll(tasks);
+            if (SavesId is null)
             {
-                Name = "Backups",
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { CloudSyncId }
-            }).ExecuteAsync();
-            BackupsId = backups.Id;
+                throw new Exception("Failed to create the Saves folder.");
+            }
+            if (BackupsId is null)
+            {
+                throw new Exception("Failed to create the Backups folder.");
+            }
 
             return;
         }
@@ -115,26 +143,28 @@ public class CloudClient : ICloudClient
         SavesId = csFolders.Files.FirstOrDefault(f => f.Name == "Saves")?.Id;
         BackupsId = csFolders.Files.FirstOrDefault(f => f.Name == "Backups")?.Id;
 
+        List<Task> createTasks = new();
         if (SavesId is null)
         {
-            DriveFile saves = await drive.Files.Create(new DriveFile
-            {
-                Name = "Saves",
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { CloudSyncId }
-            }).ExecuteAsync();
-            SavesId = saves.Id;
+            createTasks.Add(CreateSaves(drive, CloudSyncId));
         }
-
         if (BackupsId is null)
         {
-            DriveFile backups = await drive.Files.Create(new DriveFile
-            {
-                Name = "Backups",
-                MimeType = "application/vnd.google-apps.folder",
-                Parents = new List<string> { CloudSyncId }
-            }).ExecuteAsync();
-            BackupsId = backups.Id;
+            createTasks.Add(CreateBackups(drive, CloudSyncId));
+        }
+
+        if (createTasks.Count > 0)
+        {
+            await Task.WhenAll(createTasks);
+        }
+
+        if (SavesId is null)
+        {
+            throw new Exception("Failed to create the Saves folder.");
+        }
+        if (BackupsId is null)
+        {
+            throw new Exception("Failed to create the Backups folder.");
         }
     }
 
@@ -188,10 +218,12 @@ public class CloudClient : ICloudClient
             fields: "id",
             q: $"name='{saveName}' and mimeType='application/vnd.google-apps.folder' and '{SavesId}' in parents and trashed = false");
 
+        List<Task> tasks = new();
         foreach (DriveFile file in files)
         {
-            await Drive.Files.Delete(file.Id).ExecuteAsync();
+            tasks.Add(Pipeline.ExecuteAsync(async _ => await Drive.Files.Delete(file.Id).ExecuteAsync(CancellationToken.None)).AsTask());
         }
+        await Task.WhenAll(tasks);
     }
 
     public async Task UploadSave(string saveName)
@@ -266,10 +298,12 @@ public class CloudClient : ICloudClient
         DriveFile[] allFiles = await GetAllFiles(Drive,
             q: $"name='{folderName}' and mimeType='application/vnd.google-apps.folder' and '{BackupsId}' in parents and trashed = false");
 
+        List<Task> tasks = new();
         foreach (DriveFile file in allFiles)
         {
-            await Drive.Files.Delete(file.Id).ExecuteAsync();
+            tasks.Add(Pipeline.ExecuteAsync(async _ => await Drive.Files.Delete(file.Id).ExecuteAsync(CancellationToken.None)).AsTask());
         }
+        await Task.WhenAll(tasks);
     }
 
     public async Task BackupSave(string saveName)
@@ -289,29 +323,33 @@ public class CloudClient : ICloudClient
             return;
         }
 
-        DriveFile destination = await Drive.Files.Create(new DriveFile
+        DriveFile destination = await Pipeline.ExecuteAsync(async _ => await Drive.Files.Create(new DriveFile
         {
             Name = $"{saveFolder.Name}_[{DateTimeOffset.Now.ToString(DateFormat).Replace(":", "")}]",
             MimeType = "application/vnd.google-apps.folder",
             Parents = new List<string> { BackupsId },
             Description = DateTimeOffset.Now.ToString(DateFormat)
-        }).ExecuteAsync();
+        }).ExecuteAsync(CancellationToken.None));
+
+        List<Task> tasks = new();
 
         DriveFile[] files = allFiles.Where(f => f.MimeType != "application/vnd.google-apps.folder" && f.Parents.Contains(saveFolder.Id)).ToArray();
         foreach (DriveFile file in files)
         {
-            await Drive.Files.Copy(new DriveFile
+            tasks.Add(Pipeline.ExecuteAsync(async _ => await Drive.Files.Copy(new DriveFile
             {
                 Name = file.Name,
-                Parents = new List<string> { destination.Id }
-            }, file.Id).ExecuteAsync();
+                Parents = new List<string> { destination.Id },
+            }, file.Id).ExecuteAsync(CancellationToken.None)).AsTask());
         }
 
         DriveFile[] folders = allFiles.Where(f => f.MimeType == "application/vnd.google-apps.folder" && f.Parents.Contains(saveFolder.Id)).ToArray();
         foreach (DriveFile folder in folders)
         {
-            await CopyFolder(Drive, allFiles, folder, destination.Id);
+            tasks.Add(CopyFolder(Drive, allFiles, folder, destination.Id));
         }
+
+        await Task.WhenAll(tasks);
     }
 
     public async Task DownloadBackup(string folderName, string parentPath)
@@ -366,7 +404,10 @@ public class CloudClient : ICloudClient
             backups.Add((match.Groups[1].Value, file.Id, date));
         }
 
+
         IEnumerable<IGrouping<string, (string folderName, string id, DateTimeOffset date)>> groupedBackups = backups.GroupBy(backup => backup.folderName);
+
+        List<Task> tasks = new();
         foreach (IGrouping<string,(string folderName, string id, DateTimeOffset date)> group in groupedBackups)
         {
             if (group.Count() <= backupsToKeep)
@@ -380,9 +421,46 @@ public class CloudClient : ICloudClient
 
             foreach ((string folderName, string id, DateTimeOffset date) backup in backupsToDelete)
             {
-                await Drive.Files.Delete(backup.id).ExecuteAsync();
+                tasks.Add(TryDeleteBackup(Drive, backup.folderName, backup.id));
             }
         }
+
+        await Task.WhenAll(tasks);
+        return;
+
+        async Task TryDeleteBackup(DriveService drive, string folderName, string id)
+        {
+            try
+            {
+                await Pipeline.ExecuteAsync(async _ => await drive.Files.Delete(id).ExecuteAsync(CancellationToken.None));
+            }
+            catch (Exception ex)
+            {
+                Mod.Logger.Log($"An error occured while deleting the backup \"{folderName}\" with id \"{id}\": {ex}", LogLevel.Error);
+            }
+        }
+    }
+
+    private static async Task CreateSaves(DriveService drive, string id)
+    {
+        DriveFile saves = await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(new DriveFile
+        {
+            Name = "Saves",
+            MimeType = "application/vnd.google-apps.folder",
+            Parents = new List<string> { id }
+        }).ExecuteAsync(CancellationToken.None));
+        SavesId = saves.Id;
+    }
+
+    private static async Task CreateBackups(DriveService drive, string id)
+    {
+        DriveFile backups = await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(new DriveFile
+        {
+            Name = "Backups",
+            MimeType = "application/vnd.google-apps.folder",
+            Parents = new List<string> { id }
+        }).ExecuteAsync(CancellationToken.None));
+        BackupsId = backups.Id;
     }
 
     private static async Task<DriveFile[]> GetAllFiles(DriveService drive, string? fields = null, string? q = null)
@@ -402,7 +480,7 @@ public class CloudClient : ICloudClient
                 savesRequest.Fields = $"nextPageToken, files({fields})";
             }
 
-            FileList files = await savesRequest.ExecuteAsync();
+            FileList files = await Pipeline.ExecuteAsync(async _ => await savesRequest.ExecuteAsync(CancellationToken.None));
             allFiles.AddRange(files.Files);
             nextPageToken = files.NextPageToken;
         } while (!string.IsNullOrEmpty(nextPageToken));
@@ -412,13 +490,15 @@ public class CloudClient : ICloudClient
 
     private static async Task UploadDirectory(DriveService drive, string dir, string parentId, string? description = null, bool root = false)
     {
-        DriveFile parent = await drive.Files.Create(new DriveFile
+        DriveFile parent = await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(new DriveFile
         {
             Name = Path.GetFileName(dir),
             MimeType = "application/vnd.google-apps.folder",
             Parents = new List<string> { parentId },
             Description = description
-        }).ExecuteAsync();
+        }).ExecuteAsync(CancellationToken.None));
+
+        List<Task> tasks = new();
 
         string[] files = Directory.GetFiles(dir);
         foreach (string file in files)
@@ -434,58 +514,78 @@ public class CloudClient : ICloudClient
                 Name = name,
                 Parents = new List<string> { parent.Id }
             };
-            await using FileStream stream = File.OpenRead(file);
-            await drive.Files.Create(fileToUpload, stream, "application/octet-stream").UploadAsync();
+            tasks.Add(UploadFile(drive, fileToUpload, file, "application/octet-stream"));
         }
 
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs)
         {
-            await UploadDirectory(drive, subDir, parent.Id);
+            tasks.Add(UploadDirectory(drive, subDir, parent.Id));
         }
+
+        await Task.WhenAll(tasks);
+    }
+
+    private static async Task UploadFile(DriveService drive, DriveFile file, string path, string mimeType)
+    {
+        await using FileStream stream = File.OpenRead(path);
+        await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(file, stream, mimeType).UploadAsync(CancellationToken.None));
     }
 
     private static async Task DownloadDirectory(DriveService drive, DriveFile[] allFiles, string parentId, string dir)
     {
+        List<Task> tasks = new();
+
         List<DriveFile> files = allFiles.Where(f => f.MimeType != "application/vnd.google-apps.folder" && f.Parents.Contains(parentId)).ToList();
         foreach (DriveFile file in files)
         {
-            string filePath = Path.Combine(dir, file.Name);
-            Directory.CreateDirectory(dir);
-            await using FileStream stream = File.OpenWrite(filePath);
-            await drive.Files.Get(file.Id).DownloadAsync(stream);
+            tasks.Add(DownloadFile(drive, dir, file));
         }
 
         List<DriveFile> folders = allFiles.Where(f => f.MimeType == "application/vnd.google-apps.folder" && f.Parents.Contains(parentId)).ToList();
         foreach (DriveFile folder in folders)
         {
-            await DownloadDirectory(drive, allFiles, folder.Id, Path.Combine(dir, folder.Name));
+            tasks.Add(DownloadDirectory(drive, allFiles, folder.Id, Path.Combine(dir, folder.Name)));
         }
+
+        await Task.WhenAll(tasks);
+    }
+
+    private static async Task DownloadFile(DriveService drive, string parentPath, DriveFile file)
+    {
+        string filePath = Path.Combine(parentPath, file.Name);
+        Directory.CreateDirectory(parentPath);
+        await using FileStream stream = File.OpenWrite(filePath);
+        await Pipeline.ExecuteAsync(async _ => await drive.Files.Get(file.Id).DownloadAsync(stream, CancellationToken.None));
     }
 
     private static async Task CopyFolder(DriveService drive, DriveFile[] allFiles, DriveFile source, string parentId)
     {
-        DriveFile destination = await drive.Files.Create(new DriveFile
+        DriveFile destination = await Pipeline.ExecuteAsync(async _ => await drive.Files.Create(new DriveFile
         {
             Name = source.Name,
             MimeType = "application/vnd.google-apps.folder",
             Parents = new List<string> { parentId }
-        }).ExecuteAsync();
+        }).ExecuteAsync(CancellationToken.None));
+
+        List<Task> tasks = new();
 
         DriveFile[] files = allFiles.Where(f => f.MimeType != "application/vnd.google-apps.folder" && f.Parents.Contains(source.Id)).ToArray();
         foreach (DriveFile file in files)
         {
-            await drive.Files.Copy(new DriveFile
+            tasks.Add(Pipeline.ExecuteAsync(async _ => await drive.Files.Copy(new DriveFile
             {
                 Name = file.Name,
                 Parents = new List<string> { destination.Id }
-            }, file.Id).ExecuteAsync();
+            }, file.Id).ExecuteAsync(CancellationToken.None)).AsTask());
         }
 
         DriveFile[] folders = allFiles.Where(f => f.MimeType == "application/vnd.google-apps.folder" && f.Parents.Contains(source.Id)).ToArray();
         foreach (DriveFile folder in folders)
         {
-            await CopyFolder(drive, allFiles, folder, destination.Id);
+            tasks.Add(CopyFolder(drive, allFiles, folder, destination.Id));
         }
+
+        await Task.WhenAll(tasks);
     }
 }

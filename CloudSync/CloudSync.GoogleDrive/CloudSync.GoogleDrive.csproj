@@ -24,6 +24,8 @@
             <Private>false</Private>
         </Reference>
         <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3769" />
+        <PackageReference Include="Polly" Version="8.5.2" />
+        <PackageReference Include="Polly.RateLimiting" Version="8.5.2" />
         <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
         <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.1.1">
             <PrivateAssets>all</PrivateAssets>
