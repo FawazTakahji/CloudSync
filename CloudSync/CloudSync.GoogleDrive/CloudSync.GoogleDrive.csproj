@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <BundleExtraAssemblies>System,ThirdParty</BundleExtraAssemblies>
+        <IgnoreModFilePaths>
+            Microsoft.CodeAnalysis.CSharp.dll,
+            Microsoft.CodeAnalysis.dll,
+            System.Management.dll,
+            System.CodeDom.dll
+        </IgnoreModFilePaths>
+        <IgnoreModFilePatterns>
+            runtimes[\\/].+[\\/]lib[\\/]net6.0[\\/]System\.Management\.dll$
+        </IgnoreModFilePatterns>
+
+        <DefineConstants Condition="Exists('$(ProjectDir)ENV.cs')">$(DefineConstants);ENV_EXISTS</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="CloudSync">
+            <HintPath>$(GameModsPath)\CloudSync\CloudSync.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3769" />
+        <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
+        <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.1.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Pathoschild.Stardew.ModTranslationClassBuilder" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="assets\views\*" />
+        <Content Include="assets\views\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+</Project>
