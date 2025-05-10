@@ -67,7 +67,7 @@
                            tint="#C66E04"
                            sprite={@Mods/StardewUI/Sprites/ThinHorizontalDividerUncolored} />
 
-                    <label *if={GCSInstalled}
+                    <label *if={:GCSInstalled}
                            text={#ui.settings-view.gcs-installed}
                            margin="0,0,0,8" />
 
