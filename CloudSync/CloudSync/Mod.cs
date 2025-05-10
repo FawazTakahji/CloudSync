@@ -30,7 +30,17 @@ internal sealed class Mod : StardewModdingAPI.Mod
         I18n.Init(helper.Translation);
         ModHelper = helper;
         Logger = Monitor;
-        Config = helper.ReadConfig<Config>();
+
+        try
+        {
+            Config = helper.ReadConfig<Config>();
+        }
+        catch (Exception ex)
+        {
+            Logger.Log($"An error occured while loading config: {ex}", LogLevel.Error);
+            Config = new();
+        }
+
         Patcher.Apply(ModManifest.UniqueID);
         MenuButton.Init();
 

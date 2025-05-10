@@ -118,7 +118,15 @@ public partial class SettingsViewModel : ViewModelBase
         Mod.Config.ShowPlacementTileForGamepad = ShowPlacementTileForGamepad;
         Mod.Config.Rumble = Rumble;
 
-        Mod.ModHelper.WriteConfig(Mod.Config);
+        try
+        {
+            Mod.ModHelper.WriteConfig(Mod.Config);
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while saving settings: {ex}", LogLevel.Error);
+        }
+
         CloseMenu();
     }
 

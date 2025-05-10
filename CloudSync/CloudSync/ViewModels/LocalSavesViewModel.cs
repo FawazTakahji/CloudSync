@@ -145,6 +145,10 @@ public partial class LocalSavesViewModel : SavesViewModelBase
 
     private async Task<bool> TryBackup(string folderName)
     {
+        if (!Mod.Config.BackupSaves)
+        {
+            return true;
+        }
         try
         {
             await _client.BackupSave(folderName);

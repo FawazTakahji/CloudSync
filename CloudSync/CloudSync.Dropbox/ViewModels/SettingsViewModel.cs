@@ -202,7 +202,14 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         Mod.Config.AppKey = AppKey;
         Mod.Config.RefreshToken = RefreshToken;
 
-        Mod.ModHelper.WriteConfig(Mod.Config);
+        try
+        {
+            Mod.ModHelper.WriteConfig(Mod.Config);
+        }
+        catch (Exception ex)
+        {
+            Mod.Logger.Log($"An error occured while saving settings: {ex}", LogLevel.Error);
+        }
 
         if (string.IsNullOrEmpty(Mod.Config.RefreshToken) || string.IsNullOrEmpty(Mod.Config.AppKey))
         {
