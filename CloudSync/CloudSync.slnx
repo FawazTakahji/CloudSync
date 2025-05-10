@@ -1,4 +1,5 @@
 ﻿<Solution>
+  <Project Path="CloudSync.GoogleDrive\CloudSync.GoogleDrive.csproj" Type="Classic C#" />
   <Project Path="CloudSync.Dropbox\CloudSync.Dropbox.csproj" Type="Classic C#" />
   <Project Path="CloudSync\CloudSync.csproj" Type="Classic C#" />
 </Solution>

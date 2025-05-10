@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync", "CloudSync\Clou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync.Dropbox", "CloudSync.Dropbox\CloudSync.Dropbox.csproj", "{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudSync.GoogleDrive", "CloudSync.GoogleDrive\CloudSync.GoogleDrive.csproj", "{6E58CE5D-54C6-4B71-867E-DEE260789594}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A486BBBD-8A6D-4C4B-AF4D-EFC21A8EA762}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E58CE5D-54C6-4B71-867E-DEE260789594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E58CE5D-54C6-4B71-867E-DEE260789594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E58CE5D-54C6-4B71-867E-DEE260789594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E58CE5D-54C6-4B71-867E-DEE260789594}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

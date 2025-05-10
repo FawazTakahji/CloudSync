@@ -396,7 +396,7 @@ public interface IMenuController : IDisposable
 /// <summary>
 /// Extensions for the <see cref="IViewEngine"/> interface.
 /// </summary>
-internal static class ViewEngineExtensions
+public static class ViewEngineExtensions
 {
     /// <summary>
     /// Starts monitoring this mod's directory for changes to assets managed by any of the <see cref="IViewEngine"/>'s
