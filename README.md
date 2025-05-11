@@ -25,8 +25,6 @@ When transferring the save between pc and mobile the pc settings will get reset,
 
 ## Todo
 - Add support for other cloud storage services
-- Add the ability to delete saves on the cloud from the cloud saves menu
-- Add a menu to manage backups
 
 ## Translations
 | Language | Status | Translators |
