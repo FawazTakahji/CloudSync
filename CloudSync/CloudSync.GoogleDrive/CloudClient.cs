@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.RateLimiting;
+using CloudSync.GoogleDrive.Extensions;
 using CloudSync.Interfaces;
 using CloudSync.Models;
 using CloudSync.Utilities;
@@ -40,7 +41,9 @@ public class CloudClient : ICloudClient
             Delay = TimeSpan.FromSeconds(1),
             BackoffType = DelayBackoffType.Exponential,
             UseJitter = true,
-            ShouldHandle = new PredicateBuilder().Handle<GoogleApiException>(ex => ex.HttpStatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests),
+            ShouldHandle = new PredicateBuilder().Handle<GoogleApiException>(ex =>
+                ex.HttpStatusCode is HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests
+                && (ex.ContainsReason("rateLimitExceeded") || ex.ContainsReason("userRateLimitExceeded"))),
             DelayGenerator = static args => new ValueTask<TimeSpan?>(args.AttemptNumber switch
             {
                 0 => TimeSpan.Zero,
