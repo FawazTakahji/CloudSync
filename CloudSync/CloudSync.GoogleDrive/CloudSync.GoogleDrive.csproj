@@ -14,7 +14,7 @@
         <IgnoreModFilePatterns>
             runtimes[\\/].+[\\/]lib[\\/]net6.0[\\/]System\.Management\.dll$
         </IgnoreModFilePatterns>
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
 
         <DefineConstants Condition="Exists('$(ProjectDir)ENV.cs')">$(DefineConstants);ENV_EXISTS</DefineConstants>
     </PropertyGroup>

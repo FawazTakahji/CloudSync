@@ -1,7 +1,7 @@
 ﻿{
   "Name": "CloudSync Google Drive",
   "Author": "FawazT",
-  "Version": "1.1.0",
+  "Version": "1.2.0",
   "Description": "An extension for CloudSync that adds support for Google Drive.",
   "UniqueID": "FawazT.CloudSync.GoogleDrive",
   "EntryDll": "CloudSync.GoogleDrive.dll",

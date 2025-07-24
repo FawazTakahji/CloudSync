@@ -1,7 +1,7 @@
 {
   "Name": "CloudSync",
   "Author": "FawazT",
-  "Version": "1.2.0",
+  "Version": "1.2.1",
   "Description": "A mod that allows you to sync your saves across multiple devices using cloud storage services like Dropbox, and Google Drive.",
   "UniqueID": "FawazT.CloudSync",
   "EntryDll": "CloudSync.dll",
@@ -17,6 +17,10 @@
     },
     {
       "UniqueID": "Gaphodil.GlobalConfigSettings",
+      "IsRequired": false
+    },
+    {
+      "UniqueID": "FawazT.GlobalConfigSettingsRewrite",
       "IsRequired": false
     }
   ]
