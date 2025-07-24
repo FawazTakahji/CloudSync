@@ -1,7 +1,5 @@
-﻿using CloudSync.Dropbox.ViewModels;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewUI.Framework;
 
 namespace CloudSync.Dropbox;
 
@@ -10,8 +8,6 @@ public class Mod : StardewModdingAPI.Mod
     public static IModHelper ModHelper = null!;
     public static IMonitor Logger = null!;
     public static Config Config = null!;
-    public static IViewEngine ViewEngine = null!;
-    public static string ViewsPrefix = null!;
 
     public override void Entry(IModHelper helper)
     {
@@ -29,30 +25,12 @@ public class Mod : StardewModdingAPI.Mod
             Config = new();
         }
 
-        ViewsPrefix = $"Mods/{ModManifest.UniqueID}/Views";
-
         helper.Events.GameLoop.GameLaunched += OnGameLaunched;
     }
 
     private void OnGameLaunched(object? sender, GameLaunchedEventArgs e)
     {
-        IViewEngine? viewEngine = ModHelper.ModRegistry.GetApi<IViewEngine>("focustense.StardewUI");
-        if (viewEngine is null)
-        {
-            Monitor.Log("Couldn't load IViewEngine", LogLevel.Warn);
-        }
-        else
-        {
-            ViewEngine = viewEngine;
-            ViewEngine.RegisterViews(ViewsPrefix, "Assets/Views");
-            ViewEngine.PreloadAssets();
-            ViewEngine.PreloadModels(typeof(SettingsViewModel));
-#if DEBUG
-            ViewEngine.EnableHotReloading();
-#endif
-        }
-
-        ModHelper.Events.GameLoop.GameLaunched -= OnGameLaunched;
+        Mods.StardewUI.Setup(ModManifest);
     }
 
     public override object? GetApi()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using CloudSync.Dropbox.Mods;
 using CloudSync.Extensions;
 using CloudSync.Interfaces;
 using CloudSync.Models;
@@ -33,8 +34,14 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
 
     public static void Show(IClickableMenu? parentMenu = null)
     {
+        if (Api.ViewEngine is null)
+        {
+            Mod.Logger.Log("ViewEngine is null.", LogLevel.Warn);
+            return;
+        }
+
         SettingsViewModel viewModel = new();
-        IMenuController controller = Mod.ViewEngine.CreateMenuControllerFromAsset($"{Mod.ViewsPrefix}/SettingsView", viewModel);
+        IMenuController controller = Api.ViewEngine.CreateMenuControllerFromAsset($"{Api.ViewsPrefix}/SettingsView", viewModel);
         MenusManager.Show(controller, viewModel);
     }
 
