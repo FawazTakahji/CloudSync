@@ -22,12 +22,14 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
     [Notify] private string _clientId;
     [Notify] private string _clientSecret;
     [Notify] private string _refreshToken;
+    [Notify] private string _timeoutText;
 
     public SettingsViewModel()
     {
         ClientId = Mod.Config.ClientId;
         ClientSecret = Mod.Config.ClientSecret;
         RefreshToken = Mod.Config.RefreshToken;
+        TimeoutText = Mod.Config.Timeout.ToString();
 
         IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret) && !string.IsNullOrEmpty(RefreshToken);
     }
@@ -46,7 +48,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         MenusManager.Show(controller, viewModel);
     }
 
-    private void SaveSettings()
+    private bool SaveSettings()
     {
         if (ClientId != Mod.Config.ClientId
             || ClientSecret != Mod.Config.ClientSecret
@@ -63,6 +65,25 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         Mod.Config.ClientSecret = ClientSecret;
         Mod.Config.RefreshToken = RefreshToken;
 
+        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret) && !string.IsNullOrEmpty(RefreshToken);
+
+        if (uint.TryParse(TimeoutText, out uint parsedTimeout) && parsedTimeout > 0)
+        {
+            if (Mod.Config.Timeout != parsedTimeout)
+            {
+                CloudClient.Drive = null;
+            }
+            Mod.Config.Timeout = parsedTimeout;
+        }
+        else
+        {
+            MessageBoxViewModel.Show(
+                message: I18n.Messages_SettingsViewModel_InvalidTimeout(),
+                parentMenu: Controller?.Menu);
+            TimeoutText = Mod.Config.Timeout.ToString();
+            return false;
+        }
+
         try
         {
             Mod.ModHelper.WriteConfig(Mod.Config);
@@ -72,7 +93,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             Mod.Logger.Log($"An error occured while saving settings: {ex}", LogLevel.Error);
         }
 
-        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret) && !string.IsNullOrEmpty(RefreshToken);
+        return true;
     }
 
     public async Task Login()
@@ -223,8 +244,10 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             return;
         }
 
-        SaveSettings();
-        Controller?.Close();
+        if (SaveSettings())
+        {
+            Controller?.Close();
+        }
     }
 
     public void Cancel()
@@ -246,6 +269,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         ClientId = config.ClientId;
         ClientSecret = config.ClientSecret;
         RefreshToken = config.RefreshToken;
+        TimeoutText = config.Timeout.ToString();
 
         IsLoggedIn = false;
     }

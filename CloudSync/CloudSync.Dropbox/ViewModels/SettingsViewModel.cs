@@ -17,15 +17,17 @@ namespace CloudSync.Dropbox.ViewModels;
 public partial class SettingsViewModel : ViewModelBase, IReadyToClose
 {
     private bool _isAuthenticating;
+    [Notify] private bool _isLoggedIn;
 
     [Notify] private string _appKey;
     [Notify] private string _refreshToken;
-    [Notify] private bool _isLoggedIn;
+    [Notify] private string _timeoutText;
 
     public SettingsViewModel()
     {
         AppKey = Mod.Config.AppKey;
         RefreshToken = Mod.Config.RefreshToken;
+        TimeoutText = Mod.Config.Timeout.ToString();
         CheckStatus();
     }
 
@@ -190,7 +192,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         SaveSettings();
     }
 
-    private void SaveSettings()
+    private bool SaveSettings()
     {
         if (AppKey != Mod.Config.AppKey || RefreshToken != Mod.Config.RefreshToken &&
             (!string.IsNullOrEmpty(Mod.Config.AppKey) && !string.IsNullOrEmpty(Mod.Config.RefreshToken)))
@@ -202,6 +204,28 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         Mod.Config.AppKey = AppKey;
         Mod.Config.RefreshToken = RefreshToken;
 
+        if (string.IsNullOrEmpty(Mod.Config.RefreshToken) || string.IsNullOrEmpty(Mod.Config.AppKey))
+        {
+            CloudClient.DropboxClient = null;
+            IsLoggedIn = false;
+        }
+        if (uint.TryParse(TimeoutText, out uint parsedTimeout) && parsedTimeout > 0)
+        {
+            if (Mod.Config.Timeout != parsedTimeout)
+            {
+                CloudClient.DropboxClient = null;
+            }
+            Mod.Config.Timeout = parsedTimeout;
+        }
+        else
+        {
+            MessageBoxViewModel.Show(
+                message: I18n.Messages_SettingsViewModel_InvalidTimeout(),
+                parentMenu: Controller?.Menu);
+            TimeoutText = Mod.Config.Timeout.ToString();
+            return false;
+        }
+
         try
         {
             Mod.ModHelper.WriteConfig(Mod.Config);
@@ -211,15 +235,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             Mod.Logger.Log($"An error occured while saving settings: {ex}", LogLevel.Error);
         }
 
-        if (string.IsNullOrEmpty(Mod.Config.RefreshToken) || string.IsNullOrEmpty(Mod.Config.AppKey))
-        {
-            CloudClient.DropboxClient = null;
-            IsLoggedIn = false;
-        }
-        else
-        {
-            CloudClient.DropboxClient = new DropboxClient(Mod.Config.RefreshToken, Mod.Config.AppKey);
-        }
+        return true;
     }
 
     public void Save()
@@ -229,8 +245,10 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             return;
         }
 
-        SaveSettings();
-        CloseMenu();
+        if (SaveSettings())
+        {
+            CloseMenu();
+        }
     }
 
     public void Cancel()
@@ -251,6 +269,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         Config newConfig = new();
         AppKey = newConfig.AppKey;
         RefreshToken = newConfig.RefreshToken;
+        TimeoutText = newConfig.Timeout.ToString();
 
         SaveSettings();
     }

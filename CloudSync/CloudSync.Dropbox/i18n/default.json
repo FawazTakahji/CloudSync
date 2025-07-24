@@ -6,6 +6,8 @@
   "ui.buttons.save": "Save",
 
   "ui.settings-view.banner-title": "Dropbox Settings",
+  "ui.settings-view.timeout": "Timeout",
+  "ui.settings-view.timeout-tooltip": "The amount of time in minutes to wait before cancelling requests.",
   "ui.settings-view.advanced-settings-title": "Advanced Settings",
   "ui.settings-view.advanced-settings-warning": "Only change these settings if you know what you're doing",
   "ui.settings-view.app-key-title": "App Key",
@@ -19,5 +21,6 @@
   "messages.settings-view-model.query-no-code": "Couldn't finish the authentication process because the the api didn't return a code.",
   "messages.settings-view-model.retrieving-token": "Retrieving token...",
   "messages.settings-view-model.failed-get-token-response.check-logs": "An error occured while retrieving the token response, check the logs for more information.",
-  "messages.settings-view-model.failed-auth.no-token": "Couldn't finish the authentication process because the the api didn't return a token."
+  "messages.settings-view-model.failed-auth.no-token": "Couldn't finish the authentication process because the the api didn't return a token.",
+  "messages.settings-view-model.invalid-timeout": "Invalid timeout, please enter a valid number."
 }

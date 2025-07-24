@@ -22,6 +22,13 @@
                                 click=|Logout()| />
                     </panel>
 
+                    <label text={#ui.settings-view.timeout}
+                           tooltip={#ui.settings-view.timeout-tooltip}
+                           margin="0,16,0,8" />
+                    <textinput tooltip={#ui.settings-view.timeout-tooltip}
+                               layout="stretch 54px"
+                               text={<>TimeoutText} />
+
                     <expander layout="stretch content"
                               header-padding="0,12"
                               header-background-tint="#99c"

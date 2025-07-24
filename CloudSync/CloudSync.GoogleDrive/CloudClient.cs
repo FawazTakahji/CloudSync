@@ -94,7 +94,8 @@ public class CloudClient : ICloudClient
         Drive = new DriveService(new BaseClientService.Initializer
         {
             ApplicationName = "CloudSync",
-            HttpClientInitializer = new UserCredential(flow, "user", response)
+            HttpClientInitializer = new UserCredential(flow, "user", response),
+            HttpClientTimeout = TimeSpan.FromMinutes(Mod.Config.Timeout > 0 ? Mod.Config.Timeout : 5)
         });
     }
 
