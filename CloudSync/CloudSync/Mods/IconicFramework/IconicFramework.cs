@@ -15,7 +15,7 @@ public static class IconicFramework
             api = Mod.ModHelper.ModRegistry.GetApi<IIconicFrameworkApi>("furyx639.ToolbarIcons");
             if (api is null)
             {
-                Mod.Logger.Log("Couldn't get the IconicFramework API.", LogLevel.Error);
+                Mod.Logger.Log("Couldn't get the IconicFramework API.", LogLevel.Warn);
                 return;
             }
         }

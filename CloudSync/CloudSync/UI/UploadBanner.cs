@@ -15,7 +15,7 @@ public static class UploadBanner
     {
         if (Api.StardewUI.ViewEngine is null)
         {
-            Mod.Logger.Log("Couldn't show upload banner: ViewEngine is null.", LogLevel.Alert);
+            Mod.Logger.Log("Couldn't show upload banner: ViewEngine is null.", LogLevel.Warn);
             return;
         }
 

@@ -14,7 +14,7 @@ public static class StardewUI
             api = Mod.ModHelper.ModRegistry.GetApi<IViewEngine>("focustense.StardewUI");
             if (api is null)
             {
-                Mod.Logger.Log("Couldn't load IViewEngine.", LogLevel.Alert);
+                Mod.Logger.Log("Couldn't load IViewEngine.", LogLevel.Warn);
                 return;
             }
         }

@@ -17,7 +17,7 @@ public static class StarControl
             api = Mod.ModHelper.ModRegistry.GetApi<IStarControlApi>("focustense.StarControl");
             if (api is null)
             {
-                Mod.Logger.Log("Couldn't get the StarControl API.", LogLevel.Alert);
+                Mod.Logger.Log("Couldn't get the StarControl API.", LogLevel.Warn);
                 return;
             }
         }
