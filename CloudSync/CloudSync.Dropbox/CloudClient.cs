@@ -50,7 +50,13 @@ public class CloudClient : ICloudClient
             throw new Exception("The Dropbox client is null.");
         }
 
-        DropboxClient ??= new DropboxClient(Mod.Config.RefreshToken, Mod.Config.AppKey);
+        DropboxClient ??= new DropboxClient(Mod.Config.RefreshToken, Mod.Config.AppKey, new DropboxClientConfig()
+        {
+            HttpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(Mod.Config.Timeout > 0 ? Mod.Config.Timeout : 5)
+            }
+        });
     }
 
     /// <inheritdoc />
@@ -61,7 +67,6 @@ public class CloudClient : ICloudClient
             return false;
         }
 
-        DropboxClient ??= new DropboxClient(Mod.Config.RefreshToken, Mod.Config.AppKey);
         return true;
     }
 

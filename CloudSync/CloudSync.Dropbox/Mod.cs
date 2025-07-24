@@ -1,5 +1,4 @@
 ﻿using CloudSync.Dropbox.ViewModels;
-using Dropbox.Api;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewUI.Framework;
@@ -32,11 +31,6 @@ public class Mod : StardewModdingAPI.Mod
 
         ViewsPrefix = $"Mods/{ModManifest.UniqueID}/Views";
 
-        if (!string.IsNullOrEmpty(Config.RefreshToken) && !string.IsNullOrEmpty(Config.AppKey))
-        {
-            CloudClient.DropboxClient = new DropboxClient(Config.RefreshToken, Config.AppKey);
-        }
-
         helper.Events.GameLoop.GameLaunched += OnGameLaunched;
     }
 
@@ -45,7 +39,7 @@ public class Mod : StardewModdingAPI.Mod
         IViewEngine? viewEngine = ModHelper.ModRegistry.GetApi<IViewEngine>("focustense.StardewUI");
         if (viewEngine is null)
         {
-            Monitor.Log("Couldn't load IViewEngine", LogLevel.Alert);
+            Monitor.Log("Couldn't load IViewEngine", LogLevel.Warn);
         }
         else
         {
