@@ -39,8 +39,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Assets\Views\*" />
-        <Content Include="Assets\Views\*">
+        <None Remove="assets\views\*" />
+        <Content Include="assets\views\*">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
