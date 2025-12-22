@@ -101,7 +101,7 @@ public static class MenuButton
 
         if (e.Button is SButton.MouseLeft or SButton.ControllerA && PointContainsButton(e.Cursor.ScreenPixels))
         {
-            HomeViewModel.Show(showCloseButton: false);
+            HomeViewModel.Show(showCloseButton: Constants.TargetPlatform == GamePlatform.Android);
         }
     }
 

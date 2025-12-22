@@ -18,6 +18,8 @@ public static class System
             case GamePlatform.Mac:
                 Process.Start("open", uri);
                 break;
+            default:
+                throw new NotSupportedException($"Unsupported platform: {Constants.TargetPlatform}");
         }
     }
 }

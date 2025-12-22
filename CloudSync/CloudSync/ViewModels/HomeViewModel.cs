@@ -29,10 +29,6 @@ public class HomeViewModel : ViewModelBase
             }
             else
             {
-                if (showCloseButton)
-                {
-                    controller.EnableCloseButton();
-                }
                 titleMenu.SetChildMenu(controller.Menu);
             }
         }
@@ -43,12 +39,12 @@ public class HomeViewModel : ViewModelBase
                 Game1.activeClickableMenu.exitThisMenu();
             }
 
-            if (showCloseButton)
-            {
-                controller.EnableCloseButton();
-            }
-
             Game1.activeClickableMenu = controller.Menu;
+        }
+
+        if (showCloseButton)
+        {
+            controller.EnableCloseButton();
         }
 
         if (playSound)
