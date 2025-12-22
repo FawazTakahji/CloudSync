@@ -103,6 +103,14 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             return;
         }
 
+        if (Constants.TargetPlatform == GamePlatform.Android)
+        {
+            MessageBoxViewModel.Show(
+                message: I18n.Messages_SettingsViewModel_PlatformNotSupported(),
+                parentMenu: Controller?.Menu);
+            return;
+        }
+
         try
         {
             _isAuthenticating = true;
