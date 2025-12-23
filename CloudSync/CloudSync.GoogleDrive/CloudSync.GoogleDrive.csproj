@@ -8,7 +8,6 @@
         <IgnoreModFilePaths>
             Microsoft.CodeAnalysis.CSharp.dll,
             Microsoft.CodeAnalysis.dll,
-            System.Management.dll,
             System.CodeDom.dll
         </IgnoreModFilePaths>
         <IgnoreModFilePatterns>
