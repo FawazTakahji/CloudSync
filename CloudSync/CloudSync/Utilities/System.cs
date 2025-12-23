@@ -13,7 +13,7 @@ public static class System
                 Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
                 break;
             case GamePlatform.Linux:
-                Process.Start("xdg-open", uri);
+                Process.Start("xdg-open", $"\"{uri}\"");
                 break;
             case GamePlatform.Mac:
                 Process.Start("open", uri);
