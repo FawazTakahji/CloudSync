@@ -1,7 +1,7 @@
 ﻿{
   "Name": "CloudSync Google Drive",
   "Author": "FawazT",
-  "Version": "1.2.0",
+  "Version": "1.2.1",
   "Description": "An extension for CloudSync that adds support for Google Drive.",
   "UniqueID": "FawazT.CloudSync.GoogleDrive",
   "EntryDll": "CloudSync.GoogleDrive.dll",
@@ -12,7 +12,7 @@
   "Dependencies": [
     {
       "UniqueID": "FawazT.CloudSync",
-      "MinimumVersion": "1.0.0"
+      "MinimumVersion": "1.2.2"
     },
     {
       "UniqueID": "focustense.StardewUI",
