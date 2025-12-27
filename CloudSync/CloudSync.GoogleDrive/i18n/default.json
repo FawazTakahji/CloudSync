@@ -14,6 +14,7 @@
   "ui.settings-view.client-id-tooltip": "The Client ID to be used to call the Drive API",
   "ui.settings-view.client-secret-title": "Client Secret",
   "ui.settings-view.client-secret-tooltip": "The Client Secret to be used to call the Drive API",
+  "ui.settings-view.client-secret-optional": "Can be left empty if using mobile client id",
   "ui.settings-view.refresh-token-title": "Refresh Token",
   "ui.settings-view.refresh-token-tooltip": "The refresh token to be used when calling the Drive API",
 

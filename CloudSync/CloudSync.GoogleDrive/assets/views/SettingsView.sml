@@ -49,9 +49,11 @@
                             <label text={#ui.settings-view.client-secret-title}
                                     tooltip={#ui.settings-view.client-secret-tooltip} />
                             <textinput layout="stretch 54px"
-                                       margin="0,16,0,16"
+                                       margin="0,16,0,0"
                                        tooltip={#ui.settings-view.client-secret-tooltip}
                                        text={<>ClientSecret} />
+                            <label text={#ui.settings-view.client-secret-optional}
+                                   margin="0,0,0,20" />
 
                             <label text={#ui.settings-view.refresh-token-title}
                                    tooltip={#ui.settings-view.refresh-token-tooltip} />
