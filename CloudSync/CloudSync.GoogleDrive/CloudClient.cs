@@ -64,7 +64,6 @@ public class CloudClient : ICloudClient
     private static void CheckClient()
     {
         if (string.IsNullOrEmpty(Mod.Config.ClientId) ||
-            string.IsNullOrEmpty(Mod.Config.ClientSecret) ||
             string.IsNullOrEmpty(Mod.Config.RefreshToken))
         {
             throw new Exception("Drive Service is null.");
@@ -174,7 +173,7 @@ public class CloudClient : ICloudClient
 
     public bool IsAuthenticated()
     {
-        return !string.IsNullOrEmpty(Mod.Config.ClientId) && !string.IsNullOrEmpty(Mod.Config.ClientSecret) && !string.IsNullOrEmpty(Mod.Config.RefreshToken);
+        return !string.IsNullOrEmpty(Mod.Config.ClientId) && !string.IsNullOrEmpty(Mod.Config.RefreshToken);
     }
 
     public async Task<((string folderName, string farmerName, string farmName, int daysPlayed)[] saves, bool loadFailed)> GetSaves()

@@ -31,7 +31,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         RefreshToken = Mod.Config.RefreshToken;
         TimeoutText = Mod.Config.Timeout.ToString();
 
-        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret) && !string.IsNullOrEmpty(RefreshToken);
+        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(RefreshToken);
     }
 
     public static void Show(IClickableMenu? parentMenu = null)
@@ -54,7 +54,6 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
             || ClientSecret != Mod.Config.ClientSecret
             || RefreshToken != Mod.Config.RefreshToken
             && !string.IsNullOrEmpty(Mod.Config.ClientId)
-            && !string.IsNullOrEmpty(Mod.Config.ClientSecret)
             && !string.IsNullOrEmpty(Mod.Config.RefreshToken))
         {
             CloudClient.Drive = null;
@@ -65,7 +64,7 @@ public partial class SettingsViewModel : ViewModelBase, IReadyToClose
         Mod.Config.ClientSecret = ClientSecret;
         Mod.Config.RefreshToken = RefreshToken;
 
-        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(ClientSecret) && !string.IsNullOrEmpty(RefreshToken);
+        IsLoggedIn = !string.IsNullOrEmpty(ClientId) && !string.IsNullOrEmpty(RefreshToken);
 
         if (uint.TryParse(TimeoutText, out uint parsedTimeout) && parsedTimeout > 0)
         {
